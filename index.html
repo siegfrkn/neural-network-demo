@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Neural Network Visualization</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Interactive Neural Network</h1>
+            <p class="subtitle">Watch how a neural network learns through forward propagation and backpropagation</p>
+        </header>
+
+        <main>
+            <section class="visualization-section">
+                <canvas id="networkCanvas" width="800" height="500"></canvas>
+                <div class="layer-labels">
+                    <span class="label input-label">Input Layer</span>
+                    <span class="label hidden-label">Hidden Layer</span>
+                    <span class="label output-label">Output Layer</span>
+                </div>
+            </section>
+
+            <section class="controls-section">
+                <div class="control-group">
+                    <h3>Training Data</h3>
+                    <div class="input-grid">
+                        <div class="input-pair">
+                            <label>Input 1:</label>
+                            <input type="range" id="input1" min="0" max="1" step="0.1" value="0">
+                            <span id="input1Value">0</span>
+                        </div>
+                        <div class="input-pair">
+                            <label>Input 2:</label>
+                            <input type="range" id="input2" min="0" max="1" step="0.1" value="0">
+                            <span id="input2Value">0</span>
+                        </div>
+                        <div class="input-pair">
+                            <label>Expected Output:</label>
+                            <input type="range" id="expectedOutput" min="0" max="1" step="0.1" value="0">
+                            <span id="expectedOutputValue">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>Training Controls</h3>
+                    <div class="button-group">
+                        <button id="stepBtn" class="btn btn-primary">Step Forward</button>
+                        <button id="trainBtn" class="btn btn-success">Train (100 epochs)</button>
+                        <button id="autoTrainBtn" class="btn btn-info">Auto Train</button>
+                        <button id="resetBtn" class="btn btn-danger">Reset Network</button>
+                    </div>
+                    <div class="slider-group">
+                        <label>Learning Rate: <span id="lrValue">0.5</span></label>
+                        <input type="range" id="learningRate" min="0.01" max="1" step="0.01" value="0.5">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>Preset Problems</h3>
+                    <div class="button-group">
+                        <button id="xorBtn" class="btn btn-secondary">XOR Problem</button>
+                        <button id="andBtn" class="btn btn-secondary">AND Gate</button>
+                        <button id="orBtn" class="btn btn-secondary">OR Gate</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="info-section">
+                <div class="stats-panel">
+                    <h3>Network Statistics</h3>
+                    <div class="stat-row">
+                        <span class="stat-label">Epoch:</span>
+                        <span id="epochCount" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Current Error:</span>
+                        <span id="currentError" class="stat-value">-</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Prediction:</span>
+                        <span id="prediction" class="stat-value">-</span>
+                    </div>
+                </div>
+
+                <div class="explanation-panel">
+                    <h3>How It Works</h3>
+                    <div id="explanationText">
+                        <p><strong>Forward Propagation:</strong> Data flows from input layer through hidden layer to output. Each connection has a weight that multiplies the signal.</p>
+                        <p><strong>Backpropagation:</strong> The error is calculated and propagated backward, adjusting weights to reduce the error.</p>
+                        <p><strong>Activation Function:</strong> We use the sigmoid function to introduce non-linearity, enabling the network to learn complex patterns.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="weights-section">
+                <h3>Current Weights</h3>
+                <div id="weightsDisplay" class="weights-grid"></div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Built to demonstrate neural network fundamentals | Adjust inputs and watch the network learn!</p>
+        </footer>
+    </div>
+
+    <script src="neural-network.js"></script>
+    <script src="visualization.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
