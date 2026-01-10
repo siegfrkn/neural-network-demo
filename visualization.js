@@ -10,8 +10,8 @@ class NetworkVisualizer {
         this.network = network;
 
         // Layout configuration
-        this.padding = 80;
-        this.neuronRadius = 28;
+        this.padding = 60;
+        this.neuronRadius = 25;
 
         // Colors
         this.colors = {

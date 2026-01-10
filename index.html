@@ -15,95 +15,109 @@
 
         <main>
             <section class="visualization-section">
-                <canvas id="networkCanvas" width="800" height="500"></canvas>
+                <canvas id="networkCanvas" width="900" height="450"></canvas>
                 <div class="layer-labels">
-                    <span class="label input-label">Input Layer</span>
-                    <span class="label hidden-label">Hidden Layer</span>
-                    <span class="label output-label">Output Layer</span>
+                    <span class="label input-label">Input Layer (2)</span>
+                    <span class="label hidden-label">Hidden Layer (4)</span>
+                    <span class="label output-label">Output Layer (1)</span>
                 </div>
             </section>
 
-            <section class="controls-section">
-                <div class="control-group">
-                    <h3>Training Data</h3>
-                    <div class="input-grid">
-                        <div class="input-pair">
-                            <label>Input 1:</label>
-                            <input type="range" id="input1" min="0" max="1" step="0.1" value="0">
-                            <span id="input1Value">0</span>
-                        </div>
-                        <div class="input-pair">
-                            <label>Input 2:</label>
-                            <input type="range" id="input2" min="0" max="1" step="0.1" value="0">
-                            <span id="input2Value">0</span>
-                        </div>
-                        <div class="input-pair">
-                            <label>Expected Output:</label>
-                            <input type="range" id="expectedOutput" min="0" max="1" step="0.1" value="0">
-                            <span id="expectedOutputValue">0</span>
-                        </div>
-                    </div>
+            <section class="problem-selector">
+                <h2>Choose a Problem to Learn</h2>
+                <div class="problem-buttons">
+                    <button id="xorBtn" class="problem-btn">
+                        <span class="problem-name">XOR</span>
+                        <span class="problem-desc">Output 1 when inputs differ</span>
+                    </button>
+                    <button id="andBtn" class="problem-btn">
+                        <span class="problem-name">AND</span>
+                        <span class="problem-desc">Output 1 when both inputs are 1</span>
+                    </button>
+                    <button id="orBtn" class="problem-btn">
+                        <span class="problem-name">OR</span>
+                        <span class="problem-desc">Output 1 when any input is 1</span>
+                    </button>
+                </div>
+            </section>
+
+            <section class="truth-table-section" id="truthTableSection" style="display: none;">
+                <div class="truth-table-container">
+                    <h3>Truth Table: <span id="problemName">-</span></h3>
+                    <table class="truth-table" id="truthTable">
+                        <thead>
+                            <tr>
+                                <th>Input 1</th>
+                                <th>Input 2</th>
+                                <th>Expected</th>
+                                <th>Prediction</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="truthTableBody">
+                        </tbody>
+                    </table>
                 </div>
 
-                <div class="control-group">
-                    <h3>Training Controls</h3>
-                    <div class="button-group">
-                        <button id="stepBtn" class="btn btn-primary">Step Forward</button>
-                        <button id="trainBtn" class="btn btn-success">Train (100 epochs)</button>
-                        <button id="autoTrainBtn" class="btn btn-info">Auto Train</button>
-                        <button id="resetBtn" class="btn btn-danger">Reset Network</button>
+                <div class="training-panel">
+                    <div class="stats-display">
+                        <div class="stat-item">
+                            <span class="stat-number" id="epochCount">0</span>
+                            <span class="stat-label">Epochs</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="accuracy">0%</span>
+                            <span class="stat-label">Accuracy</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="avgError">-</span>
+                            <span class="stat-label">Avg Error</span>
+                        </div>
                     </div>
-                    <div class="slider-group">
+
+                    <div class="training-controls">
+                        <button id="trainUntilLearnedBtn" class="btn btn-large btn-success">
+                            Train Until Learned
+                        </button>
+                        <button id="trainStepBtn" class="btn btn-primary">
+                            Train 1 Epoch
+                        </button>
+                        <button id="train100Btn" class="btn btn-primary">
+                            Train 100 Epochs
+                        </button>
+                        <button id="resetBtn" class="btn btn-danger">
+                            Reset Network
+                        </button>
+                    </div>
+
+                    <div class="speed-control">
                         <label>Learning Rate: <span id="lrValue">0.5</span></label>
-                        <input type="range" id="learningRate" min="0.01" max="1" step="0.01" value="0.5">
-                    </div>
-                </div>
-
-                <div class="control-group">
-                    <h3>Preset Problems</h3>
-                    <div class="button-group">
-                        <button id="xorBtn" class="btn btn-secondary">XOR Problem</button>
-                        <button id="andBtn" class="btn btn-secondary">AND Gate</button>
-                        <button id="orBtn" class="btn btn-secondary">OR Gate</button>
+                        <input type="range" id="learningRate" min="0.1" max="2" step="0.1" value="0.5">
                     </div>
                 </div>
             </section>
 
             <section class="info-section">
-                <div class="stats-panel">
-                    <h3>Network Statistics</h3>
-                    <div class="stat-row">
-                        <span class="stat-label">Epoch:</span>
-                        <span id="epochCount" class="stat-value">0</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Current Error:</span>
-                        <span id="currentError" class="stat-value">-</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Prediction:</span>
-                        <span id="prediction" class="stat-value">-</span>
-                    </div>
-                </div>
-
                 <div class="explanation-panel">
                     <h3>How It Works</h3>
                     <div id="explanationText">
-                        <p><strong>Forward Propagation:</strong> Data flows from input layer through hidden layer to output. Each connection has a weight that multiplies the signal.</p>
-                        <p><strong>Backpropagation:</strong> The error is calculated and propagated backward, adjusting weights to reduce the error.</p>
-                        <p><strong>Activation Function:</strong> We use the sigmoid function to introduce non-linearity, enabling the network to learn complex patterns.</p>
+                        <p><strong>1. Choose a problem above</strong> to see what the network needs to learn.</p>
+                        <p><strong>2. Click "Train Until Learned"</strong> to watch the network adjust its weights automatically.</p>
+                        <p><strong>3. Watch the truth table</strong> - predictions turn green as the network learns each pattern.</p>
                     </div>
                 </div>
             </section>
 
-            <section class="weights-section">
-                <h3>Current Weights</h3>
-                <div id="weightsDisplay" class="weights-grid"></div>
+            <section class="weights-section" id="weightsSection" style="display: none;">
+                <details>
+                    <summary>View Current Weights</summary>
+                    <div id="weightsDisplay" class="weights-grid"></div>
+                </details>
             </section>
         </main>
 
         <footer>
-            <p>Built to demonstrate neural network fundamentals | Adjust inputs and watch the network learn!</p>
+            <p>Built to demonstrate neural network fundamentals</p>
         </footer>
     </div>
 
