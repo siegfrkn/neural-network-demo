@@ -1,6 +1,6 @@
 /**
  * Neural Network Visualization
- * Renders the network on a canvas with animations
+ * Renders networks with any number of layers on canvas
  */
 
 class NetworkVisualizer {
@@ -10,8 +10,9 @@ class NetworkVisualizer {
         this.network = network;
 
         // Layout configuration
-        this.padding = 60;
-        this.neuronRadius = 25;
+        this.padding = 50;
+        this.maxNeuronRadius = 20;
+        this.minNeuronRadius = 8;
 
         // Colors
         this.colors = {
@@ -23,61 +24,55 @@ class NetworkVisualizer {
             outputNeuron: '#00ff88',
             positiveWeight: '#00ff88',
             negativeWeight: '#ff6b6b',
-            text: '#ffffff',
-            activeGlow: '#00d9ff'
+            text: '#ffffff'
         };
 
-        // Animation state
-        this.animationPhase = 'idle'; // 'idle', 'forward', 'backward'
-        this.animationProgress = 0;
-        this.signalPositions = [];
-
-        // Calculate neuron positions
+        // Calculate positions
         this.calculatePositions();
     }
 
     /**
-     * Calculate positions for all neurons
+     * Update the network reference and recalculate
+     */
+    setNetwork(network) {
+        this.network = network;
+        this.calculatePositions();
+    }
+
+    /**
+     * Calculate positions for all neurons in all layers
      */
     calculatePositions() {
         const width = this.canvas.width;
         const height = this.canvas.height;
+        const layerSizes = this.network.getLayerSizes();
+        const numLayers = layerSizes.length;
 
-        // Layer x positions
-        const layerX = [
-            this.padding + 50,
-            width / 2,
-            width - this.padding - 50
-        ];
+        // Calculate neuron radius based on largest layer
+        const maxNeurons = Math.max(...layerSizes);
+        this.neuronRadius = Math.max(
+            this.minNeuronRadius,
+            Math.min(this.maxNeuronRadius, (height - 2 * this.padding) / (maxNeurons * 3))
+        );
 
-        // Input layer (2 neurons)
-        this.inputPositions = [];
-        const inputSpacing = (height - 2 * this.padding) / 3;
-        for (let i = 0; i < this.network.inputSize; i++) {
-            this.inputPositions.push({
-                x: layerX[0],
-                y: this.padding + inputSpacing + i * inputSpacing
-            });
-        }
+        // Calculate layer x positions
+        const layerSpacing = (width - 2 * this.padding) / (numLayers - 1);
 
-        // Hidden layer (3 neurons)
-        this.hiddenPositions = [];
-        const hiddenSpacing = (height - 2 * this.padding) / (this.network.hiddenSize + 1);
-        for (let i = 0; i < this.network.hiddenSize; i++) {
-            this.hiddenPositions.push({
-                x: layerX[1],
-                y: this.padding + hiddenSpacing + i * hiddenSpacing
-            });
-        }
+        this.layerPositions = [];
 
-        // Output layer (1 neuron)
-        this.outputPositions = [];
-        const outputSpacing = (height - 2 * this.padding) / 2;
-        for (let i = 0; i < this.network.outputSize; i++) {
-            this.outputPositions.push({
-                x: layerX[2],
-                y: height / 2
-            });
+        for (let layer = 0; layer < numLayers; layer++) {
+            const layerX = this.padding + layer * layerSpacing;
+            const numNeurons = layerSizes[layer];
+            const neuronSpacing = (height - 2 * this.padding) / (numNeurons + 1);
+
+            const positions = [];
+            for (let i = 0; i < numNeurons; i++) {
+                positions.push({
+                    x: layerX,
+                    y: this.padding + neuronSpacing * (i + 1)
+                });
+            }
+            this.layerPositions.push(positions);
         }
     }
 
@@ -85,91 +80,65 @@ class NetworkVisualizer {
      * Draw the entire network
      */
     draw() {
-        // Clear canvas
-        this.ctx.fillStyle = this.colors.background;
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        const ctx = this.ctx;
 
-        // Draw connections first (behind neurons)
+        // Clear canvas
+        ctx.fillStyle = this.colors.background;
+        ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Draw connections
         this.drawConnections();
 
         // Draw neurons
         this.drawNeurons();
-
-        // Draw signals if animating
-        if (this.animationPhase !== 'idle') {
-            this.drawSignals();
-        }
     }
 
     /**
-     * Draw all connections between neurons
+     * Draw all connections between layers
      */
     drawConnections() {
         const weights = this.network.getWeights();
+        const numLayers = this.layerPositions.length;
 
-        // Input to Hidden connections
-        for (let i = 0; i < this.network.inputSize; i++) {
-            for (let j = 0; j < this.network.hiddenSize; j++) {
-                const weight = weights.inputHidden[i][j];
-                this.drawConnection(
-                    this.inputPositions[i],
-                    this.hiddenPositions[j],
-                    weight,
-                    this.animationPhase === 'forward' && this.animationProgress > i * 0.2
-                );
-            }
-        }
+        for (let layer = 0; layer < numLayers - 1; layer++) {
+            const fromPositions = this.layerPositions[layer];
+            const toPositions = this.layerPositions[layer + 1];
+            const layerWeights = weights[layer];
 
-        // Hidden to Output connections
-        for (let j = 0; j < this.network.hiddenSize; j++) {
-            for (let k = 0; k < this.network.outputSize; k++) {
-                const weight = weights.hiddenOutput[j][k];
-                this.drawConnection(
-                    this.hiddenPositions[j],
-                    this.outputPositions[k],
-                    weight,
-                    this.animationPhase === 'forward' && this.animationProgress > 0.5 + j * 0.1
-                );
+            // For large networks, don't draw all connections (too cluttered)
+            const skipConnections = fromPositions.length > 10 || toPositions.length > 10;
+
+            for (let i = 0; i < fromPositions.length; i++) {
+                for (let j = 0; j < toPositions.length; j++) {
+                    // Skip some connections for clarity in large networks
+                    if (skipConnections && (i + j) % 3 !== 0) continue;
+
+                    const weight = layerWeights[i][j];
+                    this.drawConnection(fromPositions[i], toPositions[j], weight, skipConnections);
+                }
             }
         }
     }
 
     /**
-     * Draw a single connection with weight visualization
+     * Draw a single connection
      */
-    drawConnection(from, to, weight, active = false) {
+    drawConnection(from, to, weight, simplified = false) {
         const ctx = this.ctx;
 
-        // Calculate line width based on weight magnitude
-        const lineWidth = Math.min(Math.abs(weight) * 4 + 1, 6);
+        const lineWidth = simplified
+            ? Math.min(Math.abs(weight) * 2 + 0.5, 3)
+            : Math.min(Math.abs(weight) * 3 + 1, 5);
 
-        // Color based on weight sign
         const color = weight >= 0 ? this.colors.positiveWeight : this.colors.negativeWeight;
-        const alpha = Math.min(Math.abs(weight) * 0.5 + 0.2, 0.8);
+        const alpha = Math.min(Math.abs(weight) * 0.4 + 0.1, 0.6);
 
         ctx.beginPath();
         ctx.moveTo(from.x + this.neuronRadius, from.y);
         ctx.lineTo(to.x - this.neuronRadius, to.y);
-
-        ctx.strokeStyle = active
-            ? color
-            : this.hexToRgba(color, alpha);
+        ctx.strokeStyle = this.hexToRgba(color, alpha);
         ctx.lineWidth = lineWidth;
         ctx.stroke();
-
-        // Draw weight value at midpoint
-        const midX = (from.x + to.x) / 2;
-        const midY = (from.y + to.y) / 2;
-
-        // Small background for text
-        ctx.fillStyle = this.colors.background;
-        ctx.fillRect(midX - 20, midY - 8, 40, 16);
-
-        ctx.fillStyle = this.colors.text;
-        ctx.font = '10px monospace';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(weight.toFixed(2), midX, midY);
     }
 
     /**
@@ -177,256 +146,119 @@ class NetworkVisualizer {
      */
     drawNeurons() {
         const activations = this.network.getActivations();
+        const layerSizes = this.network.getLayerSizes();
+        const numLayers = layerSizes.length;
 
-        // Draw input neurons
-        this.inputPositions.forEach((pos, i) => {
-            const activation = activations.input[i] || 0;
-            this.drawNeuron(pos, activation, this.colors.inputNeuron, `I${i + 1}`);
-        });
+        for (let layer = 0; layer < numLayers; layer++) {
+            const positions = this.layerPositions[layer];
+            const layerActivations = activations[layer] || [];
 
-        // Draw hidden neurons
-        this.hiddenPositions.forEach((pos, i) => {
-            const activation = activations.hidden[i] || 0;
-            this.drawNeuron(pos, activation, this.colors.hiddenNeuron, `H${i + 1}`);
-        });
+            // Determine layer color
+            let color;
+            if (layer === 0) {
+                color = this.colors.inputNeuron;
+            } else if (layer === numLayers - 1) {
+                color = this.colors.outputNeuron;
+            } else {
+                color = this.colors.hiddenNeuron;
+            }
 
-        // Draw output neurons
-        this.outputPositions.forEach((pos, i) => {
-            const activation = activations.output[i] || 0;
-            this.drawNeuron(pos, activation, this.colors.outputNeuron, `O${i + 1}`);
-        });
+            // For large layers, show simplified view
+            const simplified = positions.length > 10;
+
+            for (let i = 0; i < positions.length; i++) {
+                const activation = layerActivations[i] || 0;
+                const label = simplified ? '' : this.getNeuronLabel(layer, i, numLayers);
+                this.drawNeuron(positions[i], activation, color, label, simplified);
+            }
+
+            // Draw layer count if simplified
+            if (simplified) {
+                const centerY = this.canvas.height / 2;
+                const ctx = this.ctx;
+                ctx.fillStyle = color;
+                ctx.font = 'bold 14px monospace';
+                ctx.textAlign = 'center';
+                ctx.fillText(positions.length + ' neurons', positions[0].x, centerY + this.canvas.height / 2 - 30);
+            }
+        }
+    }
+
+    /**
+     * Get label for a neuron
+     */
+    getNeuronLabel(layer, index, numLayers) {
+        if (layer === 0) return 'I' + (index + 1);
+        if (layer === numLayers - 1) return 'O' + (index + 1);
+        return 'H' + layer + '.' + (index + 1);
     }
 
     /**
      * Draw a single neuron
      */
-    drawNeuron(pos, activation, color, label) {
+    drawNeuron(pos, activation, color, label, simplified = false) {
         const ctx = this.ctx;
+        const radius = simplified ? this.neuronRadius * 0.7 : this.neuronRadius;
 
         // Glow effect based on activation
-        if (activation > 0.1) {
+        if (activation > 0.1 && !simplified) {
             const gradient = ctx.createRadialGradient(
-                pos.x, pos.y, this.neuronRadius,
-                pos.x, pos.y, this.neuronRadius + 20
+                pos.x, pos.y, radius,
+                pos.x, pos.y, radius + 15
             );
-            gradient.addColorStop(0, this.hexToRgba(color, activation * 0.5));
+            gradient.addColorStop(0, this.hexToRgba(color, activation * 0.4));
             gradient.addColorStop(1, 'transparent');
 
             ctx.beginPath();
-            ctx.arc(pos.x, pos.y, this.neuronRadius + 20, 0, Math.PI * 2);
+            ctx.arc(pos.x, pos.y, radius + 15, 0, Math.PI * 2);
             ctx.fillStyle = gradient;
             ctx.fill();
         }
 
         // Neuron body
         ctx.beginPath();
-        ctx.arc(pos.x, pos.y, this.neuronRadius, 0, Math.PI * 2);
+        ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2);
 
-        // Fill with gradient based on activation
-        const fillGradient = ctx.createRadialGradient(
-            pos.x - 10, pos.y - 10, 0,
-            pos.x, pos.y, this.neuronRadius
-        );
-        fillGradient.addColorStop(0, this.hexToRgba(color, 0.3 + activation * 0.5));
-        fillGradient.addColorStop(1, this.colors.neuronFill);
-
-        ctx.fillStyle = fillGradient;
+        // Fill based on activation
+        const fillAlpha = 0.3 + activation * 0.5;
+        ctx.fillStyle = this.hexToRgba(color, fillAlpha);
         ctx.fill();
 
         // Border
         ctx.strokeStyle = color;
-        ctx.lineWidth = 2 + activation * 2;
+        ctx.lineWidth = simplified ? 1 : 2;
         ctx.stroke();
 
-        // Label
-        ctx.fillStyle = this.colors.text;
-        ctx.font = 'bold 12px monospace';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(label, pos.x, pos.y - 8);
+        // Label and value (only for non-simplified)
+        if (!simplified && label) {
+            ctx.fillStyle = this.colors.text;
+            ctx.font = 'bold 10px monospace';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
 
-        // Activation value
-        ctx.font = '11px monospace';
-        ctx.fillText(activation.toFixed(2), pos.x, pos.y + 8);
-    }
-
-    /**
-     * Draw animated signals
-     */
-    drawSignals() {
-        const ctx = this.ctx;
-
-        this.signalPositions.forEach(signal => {
-            ctx.beginPath();
-            ctx.arc(signal.x, signal.y, 6, 0, Math.PI * 2);
-
-            const gradient = ctx.createRadialGradient(
-                signal.x, signal.y, 0,
-                signal.x, signal.y, 8
-            );
-            gradient.addColorStop(0, '#ffffff');
-            gradient.addColorStop(0.5, signal.color);
-            gradient.addColorStop(1, 'transparent');
-
-            ctx.fillStyle = gradient;
-            ctx.fill();
-        });
-    }
-
-    /**
-     * Animate forward propagation
-     */
-    animateForward(callback) {
-        this.animationPhase = 'forward';
-        this.animationProgress = 0;
-        this.signalPositions = [];
-
-        const duration = 1500;
-        const startTime = performance.now();
-
-        const animate = (currentTime) => {
-            const elapsed = currentTime - startTime;
-            this.animationProgress = Math.min(elapsed / duration, 1);
-
-            // Update signal positions
-            this.updateForwardSignals();
-
-            this.draw();
-
-            if (this.animationProgress < 1) {
-                requestAnimationFrame(animate);
+            if (radius > 15) {
+                ctx.fillText(label, pos.x, pos.y - 5);
+                ctx.font = '9px monospace';
+                ctx.fillText(activation.toFixed(2), pos.x, pos.y + 6);
             } else {
-                this.animationPhase = 'idle';
-                this.signalPositions = [];
-                this.draw();
-                if (callback) callback();
-            }
-        };
-
-        requestAnimationFrame(animate);
-    }
-
-    /**
-     * Update signal positions during forward animation
-     */
-    updateForwardSignals() {
-        this.signalPositions = [];
-
-        // Input to hidden signals
-        if (this.animationProgress < 0.5) {
-            const progress = this.animationProgress * 2;
-            for (let i = 0; i < this.network.inputSize; i++) {
-                for (let j = 0; j < this.network.hiddenSize; j++) {
-                    const from = this.inputPositions[i];
-                    const to = this.hiddenPositions[j];
-                    this.signalPositions.push({
-                        x: from.x + (to.x - from.x) * progress,
-                        y: from.y + (to.y - from.y) * progress,
-                        color: this.colors.inputNeuron
-                    });
-                }
-            }
-        }
-        // Hidden to output signals
-        else {
-            const progress = (this.animationProgress - 0.5) * 2;
-            for (let j = 0; j < this.network.hiddenSize; j++) {
-                for (let k = 0; k < this.network.outputSize; k++) {
-                    const from = this.hiddenPositions[j];
-                    const to = this.outputPositions[k];
-                    this.signalPositions.push({
-                        x: from.x + (to.x - from.x) * progress,
-                        y: from.y + (to.y - from.y) * progress,
-                        color: this.colors.hiddenNeuron
-                    });
-                }
+                ctx.font = '8px monospace';
+                ctx.fillText(activation.toFixed(1), pos.x, pos.y);
             }
         }
     }
 
     /**
-     * Animate backpropagation
-     */
-    animateBackward(callback) {
-        this.animationPhase = 'backward';
-        this.animationProgress = 0;
-        this.signalPositions = [];
-
-        const duration = 1500;
-        const startTime = performance.now();
-
-        const animate = (currentTime) => {
-            const elapsed = currentTime - startTime;
-            this.animationProgress = Math.min(elapsed / duration, 1);
-
-            // Update signal positions (reverse direction)
-            this.updateBackwardSignals();
-
-            this.draw();
-
-            if (this.animationProgress < 1) {
-                requestAnimationFrame(animate);
-            } else {
-                this.animationPhase = 'idle';
-                this.signalPositions = [];
-                this.draw();
-                if (callback) callback();
-            }
-        };
-
-        requestAnimationFrame(animate);
-    }
-
-    /**
-     * Update signal positions during backward animation
-     */
-    updateBackwardSignals() {
-        this.signalPositions = [];
-
-        // Output to hidden signals
-        if (this.animationProgress < 0.5) {
-            const progress = this.animationProgress * 2;
-            for (let j = 0; j < this.network.hiddenSize; j++) {
-                for (let k = 0; k < this.network.outputSize; k++) {
-                    const from = this.outputPositions[k];
-                    const to = this.hiddenPositions[j];
-                    this.signalPositions.push({
-                        x: from.x + (to.x - from.x) * progress,
-                        y: from.y + (to.y - from.y) * progress,
-                        color: this.colors.negativeWeight
-                    });
-                }
-            }
-        }
-        // Hidden to input signals
-        else {
-            const progress = (this.animationProgress - 0.5) * 2;
-            for (let i = 0; i < this.network.inputSize; i++) {
-                for (let j = 0; j < this.network.hiddenSize; j++) {
-                    const from = this.hiddenPositions[j];
-                    const to = this.inputPositions[i];
-                    this.signalPositions.push({
-                        x: from.x + (to.x - from.x) * progress,
-                        y: from.y + (to.y - from.y) * progress,
-                        color: this.colors.negativeWeight
-                    });
-                }
-            }
-        }
-    }
-
-    /**
-     * Convert hex color to rgba
+     * Convert hex to rgba
      */
     hexToRgba(hex, alpha) {
         const r = parseInt(hex.slice(1, 3), 16);
         const g = parseInt(hex.slice(3, 5), 16);
         const b = parseInt(hex.slice(5, 7), 16);
-        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')';
     }
 
     /**
-     * Redraw immediately without animation
+     * Redraw
      */
     update() {
         this.draw();
