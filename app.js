@@ -311,11 +311,38 @@ function buildPredictionBars() {
 }
 
 /**
+ * Get current pixel count
+ */
+function getPixelCount() {
+    return pixelGrid.filter(p => p === 1).length;
+}
+
+/**
+ * Update pixel warning visibility
+ */
+function updatePixelWarning() {
+    const pixelCount = getPixelCount();
+    const warning = document.getElementById('pixelWarning');
+    const minPixels = 4;
+
+    if (pixelCount < minPixels) {
+        warning.classList.remove('hidden');
+        warning.querySelector('.warning-text').textContent =
+            'Draw at least 4 pixels (' + pixelCount + '/4)';
+    } else {
+        warning.classList.add('hidden');
+    }
+}
+
+/**
  * Update prediction display
  */
 function updatePrediction() {
-    const pixelCount = pixelGrid.filter(p => p === 1).length;
+    const pixelCount = getPixelCount();
     const minPixels = 4;
+
+    // Update warning
+    updatePixelWarning();
 
     // Check minimum pixel requirement
     if (pixelCount < minPixels) {
@@ -326,8 +353,7 @@ function updatePrediction() {
             bar.classList.remove('winner');
             document.getElementById('predValue' + i).textContent = '-';
         });
-        document.getElementById('predictedClass').textContent =
-            'Draw at least ' + minPixels + ' pixels (' + pixelCount + '/' + minPixels + ')';
+        document.getElementById('predictedClass').textContent = 'Need 4+ pixels';
         return;
     }
 

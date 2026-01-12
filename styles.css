@@ -66,26 +66,26 @@ header h1 {
 /* Main Grid Layout */
 .main-grid {
     display: grid;
-    grid-template-columns: 200px 1fr 240px;
-    gap: 15px;
+    grid-template-columns: 180px 1fr 200px;
+    gap: 12px;
     flex: 1;
-    padding-top: 15px;
+    padding-top: 12px;
     min-height: 0;
 }
 
 .panel {
     background: var(--bg-secondary);
-    border-radius: 12px;
-    padding: 15px;
+    border-radius: 10px;
+    padding: 12px;
     border: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
 }
 
 .panel h2 {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     color: var(--accent-cyan);
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     text-align: center;
 }
 
@@ -97,9 +97,35 @@ header h1 {
 .pixel-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 4px;
-    width: 150px;
-    margin-bottom: 10px;
+    gap: 3px;
+    width: 140px;
+    margin-bottom: 6px;
+}
+
+/* Pixel Warning */
+.pixel-warning {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    background: rgba(255, 107, 107, 0.15);
+    border: 1px solid var(--accent-red);
+    border-radius: 6px;
+    margin-bottom: 8px;
+    font-size: 0.7rem;
+    color: var(--accent-red);
+}
+
+.pixel-warning.hidden {
+    display: none;
+}
+
+.warning-icon {
+    font-size: 0.8rem;
+}
+
+.warning-text {
+    font-weight: 600;
 }
 
 .pixel {
