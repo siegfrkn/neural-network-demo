@@ -16,6 +16,13 @@ let pixelGrid = new Array(25).fill(0);
 let currentTestIndex = 0;
 let testResults = [];
 
+// Accuracy history for chart
+let accuracyHistory = {
+    train: [],
+    test: [],
+    maxPoints: 50  // Keep last 50 data points
+};
+
 /**
  * Initialize the application
  */
@@ -46,7 +53,96 @@ function init() {
     // Initial draw
     updatePrediction();
     updateStats();
+    drawAccuracyChart();
     visualizer.draw();
+}
+
+/**
+ * Draw the accuracy history chart
+ */
+function drawAccuracyChart() {
+    const canvas = document.getElementById('accuracyChart');
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width;
+    const height = canvas.height;
+
+    // Clear canvas
+    ctx.fillStyle = '#1a1a2e';
+    ctx.fillRect(0, 0, width, height);
+
+    // Draw grid lines
+    ctx.strokeStyle = '#2a2a4a';
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= 4; i++) {
+        const y = (height / 4) * i;
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
+    }
+
+    // Draw 25% baseline (random guess for 4 classes)
+    ctx.strokeStyle = '#4a4a6a';
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    const baselineY = height - (height * 0.25);
+    ctx.moveTo(0, baselineY);
+    ctx.lineTo(width, baselineY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // If no data, show placeholder text
+    if (accuracyHistory.train.length === 0) {
+        ctx.fillStyle = '#6a6a8a';
+        ctx.font = '11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Train to see accuracy improve', width / 2, height / 2);
+        return;
+    }
+
+    const points = accuracyHistory.train.length;
+    const xStep = width / Math.max(points - 1, 1);
+
+    // Draw train accuracy line (cyan)
+    ctx.strokeStyle = '#00d9ff';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    accuracyHistory.train.forEach((val, i) => {
+        const x = i * xStep;
+        const y = height - (val * height);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+
+    // Draw test accuracy line (purple)
+    ctx.strokeStyle = '#9d4edd';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    accuracyHistory.test.forEach((val, i) => {
+        const x = i * xStep;
+        const y = height - (val * height);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+
+    // Draw current values as dots
+    if (points > 0) {
+        const lastX = (points - 1) * xStep;
+
+        // Train dot
+        ctx.fillStyle = '#00d9ff';
+        ctx.beginPath();
+        ctx.arc(lastX, height - (accuracyHistory.train[points - 1] * height), 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Test dot
+        ctx.fillStyle = '#9d4edd';
+        ctx.beginPath();
+        ctx.arc(lastX, height - (accuracyHistory.test[points - 1] * height), 4, 0, Math.PI * 2);
+        ctx.fill();
+    }
 }
 
 /**
@@ -232,7 +328,7 @@ function updatePrediction() {
 }
 
 /**
- * Update training stats
+ * Update training stats and accuracy chart
  */
 function updateStats() {
     document.getElementById('epochCount').textContent = Math.floor(network.epoch / IMAGE_DATASET.length);
@@ -244,8 +340,8 @@ function updateStats() {
         const expected = ex.targets.indexOf(1);
         if (predicted === expected) trainCorrect++;
     });
-    document.getElementById('trainAccuracy').textContent =
-        Math.round(trainCorrect / IMAGE_DATASET.length * 100) + '%';
+    const trainAcc = trainCorrect / IMAGE_DATASET.length;
+    document.getElementById('trainAccuracy').textContent = Math.round(trainAcc * 100) + '%';
 
     // Test accuracy
     let testCorrect = 0;
@@ -254,8 +350,22 @@ function updateStats() {
         const expected = ex.targets.indexOf(1);
         if (predicted === expected) testCorrect++;
     });
-    document.getElementById('testAccuracy').textContent =
-        Math.round(testCorrect / TEST_DATASET.length * 100) + '%';
+    const testAcc = testCorrect / TEST_DATASET.length;
+    document.getElementById('testAccuracy').textContent = Math.round(testAcc * 100) + '%';
+
+    // Record accuracy history (only during training)
+    if (isTraining) {
+        accuracyHistory.train.push(trainAcc);
+        accuracyHistory.test.push(testAcc);
+
+        // Keep only last maxPoints
+        if (accuracyHistory.train.length > accuracyHistory.maxPoints) {
+            accuracyHistory.train.shift();
+            accuracyHistory.test.shift();
+        }
+
+        drawAccuracyChart();
+    }
 }
 
 /**
@@ -325,8 +435,14 @@ function resetNetwork() {
     network.reset();
     visualizer.previousWeights = null;
     visualizer.weightChanges = null;
+
+    // Clear accuracy history
+    accuracyHistory.train = [];
+    accuracyHistory.test = [];
+
     updatePrediction();
     updateStats();
+    drawAccuracyChart();
     visualizer.update();
 }
 

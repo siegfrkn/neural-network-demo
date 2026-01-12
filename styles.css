@@ -296,30 +296,65 @@ header h1 {
     font-weight: 700;
 }
 
-/* Accuracy Comparison */
-.accuracy-comparison {
+/* Accuracy Chart */
+.accuracy-chart-container {
     background: var(--bg-tertiary);
     border-radius: 8px;
     padding: 10px;
     margin-top: 10px;
 }
 
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.chart-title {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.chart-legend {
+    display: flex;
+    gap: 8px;
+    font-size: 0.65rem;
+}
+
+.legend-train {
+    color: var(--accent-cyan);
+}
+
+.legend-test {
+    color: var(--accent-purple);
+}
+
+#accuracyChart {
+    width: 100%;
+    height: 70px;
+    background: var(--bg-secondary);
+    border-radius: 4px;
+    margin-bottom: 6px;
+}
+
 .accuracy-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 4px 0;
+    gap: 6px;
 }
 
 .accuracy-label {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--text-secondary);
 }
 
 .accuracy-value {
     font-family: monospace;
     font-weight: 700;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: var(--accent-cyan);
 }
 

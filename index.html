@@ -50,14 +50,20 @@
                     </div>
                 </div>
 
-                <!-- Accuracy Comparison -->
-                <div class="accuracy-comparison">
-                    <div class="accuracy-row">
-                        <span class="accuracy-label">Train Accuracy:</span>
-                        <span class="accuracy-value" id="trainAccuracy">0%</span>
+                <!-- Accuracy Chart -->
+                <div class="accuracy-chart-container">
+                    <div class="chart-header">
+                        <span class="chart-title">Accuracy Over Time</span>
+                        <div class="chart-legend">
+                            <span class="legend-train">■ Train</span>
+                            <span class="legend-test">■ Test</span>
+                        </div>
                     </div>
+                    <canvas id="accuracyChart" width="200" height="80"></canvas>
                     <div class="accuracy-row">
-                        <span class="accuracy-label">Test Accuracy:</span>
+                        <span class="accuracy-label">Train:</span>
+                        <span class="accuracy-value" id="trainAccuracy">0%</span>
+                        <span class="accuracy-label">Test:</span>
                         <span class="accuracy-value test" id="testAccuracy">0%</span>
                     </div>
                 </div>
