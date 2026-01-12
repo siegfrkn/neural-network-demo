@@ -296,35 +296,61 @@ header h1 {
     font-weight: 700;
 }
 
+/* Accuracy Comparison */
+.accuracy-comparison {
+    background: var(--bg-tertiary);
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.accuracy-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+}
+
+.accuracy-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.accuracy-value {
+    font-family: monospace;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--accent-cyan);
+}
+
+.accuracy-value.test {
+    color: var(--accent-purple);
+}
+
 /* Training Area */
 .training-area {
     border-top: 1px solid var(--border-color);
-    padding-top: 15px;
+    padding-top: 12px;
     margin-top: auto;
 }
 
-.stats-row {
+.stat-row {
     display: flex;
-    justify-content: space-around;
-    margin-bottom: 12px;
-}
-
-.stat {
-    text-align: center;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
 }
 
 .stat-value {
-    display: block;
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     font-weight: 700;
     color: var(--accent-cyan);
     font-family: monospace;
 }
 
 .stat-label {
-    font-size: 0.65rem;
+    font-size: 0.75rem;
     color: var(--text-secondary);
-    text-transform: uppercase;
 }
 
 .training-controls {
@@ -373,6 +399,15 @@ header h1 {
     animation: pulse 1s infinite;
 }
 
+.btn-test {
+    background: var(--accent-purple);
+    color: var(--text-primary);
+}
+
+.btn-test:hover {
+    background: #b366e0;
+}
+
 .speed-control label {
     display: block;
     font-size: 0.75rem;
@@ -415,6 +450,152 @@ input[type="range"]::-webkit-slider-thumb {
     100% { filter: brightness(1); }
 }
 
+/* Test Overlay */
+.test-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 15, 26, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.test-overlay.hidden {
+    display: none;
+}
+
+.test-panel {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 25px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+}
+
+.test-panel h2 {
+    color: var(--accent-purple);
+    margin-bottom: 8px;
+    font-size: 1.3rem;
+}
+
+.test-description {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+}
+
+.test-content {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.test-pattern-display {
+    text-align: center;
+}
+
+.test-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 3px;
+    width: 100px;
+    margin: 0 auto 10px;
+}
+
+.test-grid .pixel {
+    width: 18px;
+    height: 18px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 2px;
+}
+
+.test-grid .pixel.active {
+    background: var(--accent-cyan);
+    border-color: var(--accent-cyan);
+}
+
+.test-pattern-name {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.test-result {
+    text-align: left;
+}
+
+.test-expected, .test-predicted {
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    color: var(--text-secondary);
+}
+
+.test-expected span {
+    color: var(--accent-cyan);
+    font-weight: 600;
+}
+
+.test-predicted span {
+    color: var(--accent-purple);
+    font-weight: 600;
+}
+
+.test-status {
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 8px 16px;
+    border-radius: 6px;
+    margin-top: 10px;
+}
+
+.test-status.correct {
+    background: rgba(0, 255, 136, 0.2);
+    color: var(--accent-green);
+}
+
+.test-status.incorrect {
+    background: rgba(255, 107, 107, 0.2);
+    color: var(--accent-red);
+}
+
+.test-progress {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: var(--bg-tertiary);
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+}
+
+.test-score {
+    color: var(--text-secondary);
+}
+
+.test-score span {
+    color: var(--accent-green);
+    font-weight: 700;
+}
+
+.test-controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.test-controls .btn {
+    min-width: 80px;
+}
+
 /* Responsive - Stack on smaller screens */
 @media (max-width: 900px) {
     .main-grid {
@@ -435,5 +616,10 @@ input[type="range"]::-webkit-slider-thumb {
         border-left: 1px solid var(--border-color);
         padding-top: 0;
         padding-left: 15px;
+    }
+
+    .test-content {
+        flex-direction: column;
+        gap: 15px;
     }
 }

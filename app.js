@@ -1,6 +1,6 @@
 /**
  * Neural Network Pattern Recognition
- * Single-screen image recognition demo
+ * Single-screen demo with train/test mode
  */
 
 // Network: 25 inputs (5x5 grid) -> 16 hidden -> 8 hidden -> 4 outputs
@@ -12,6 +12,10 @@ let isTraining = false;
 let trainInterval = null;
 let pixelGrid = new Array(25).fill(0);
 
+// Test mode state
+let currentTestIndex = 0;
+let testResults = [];
+
 /**
  * Initialize the application
  */
@@ -21,16 +25,23 @@ function init() {
     buildPixelGrid();
     buildPatternSamples();
     buildPredictionBars();
+    buildTestGrid();
 
     // Event listeners
     document.getElementById('clearGridBtn').addEventListener('click', clearPixelGrid);
     document.getElementById('trainBtn').addEventListener('click', toggleTraining);
+    document.getElementById('testBtn').addEventListener('click', openTestMode);
     document.getElementById('resetBtn').addEventListener('click', resetNetwork);
 
     document.getElementById('learningRate').addEventListener('input', (e) => {
         document.getElementById('lrValue').textContent = e.target.value;
         network.setLearningRate(parseFloat(e.target.value));
     });
+
+    // Test mode controls
+    document.getElementById('testPrevBtn').addEventListener('click', showPrevTest);
+    document.getElementById('testNextBtn').addEventListener('click', showNextTest);
+    document.getElementById('testCloseBtn').addEventListener('click', closeTestMode);
 
     // Initial draw
     updatePrediction();
@@ -53,6 +64,18 @@ function buildPixelGrid() {
 }
 
 /**
+ * Build the test grid (non-interactive display)
+ */
+function buildTestGrid() {
+    const container = document.getElementById('testGrid');
+    for (let i = 0; i < 25; i++) {
+        const pixel = document.createElement('div');
+        pixel.className = 'pixel';
+        container.appendChild(pixel);
+    }
+}
+
+/**
  * Toggle a pixel on/off
  */
 function togglePixel(index) {
@@ -66,7 +89,7 @@ function togglePixel(index) {
  * Update pixel grid display
  */
 function updatePixelDisplay() {
-    const pixels = document.querySelectorAll('.pixel');
+    const pixels = document.querySelectorAll('#pixelGrid .pixel');
     pixels.forEach((pixel, i) => {
         pixel.classList.toggle('active', pixelGrid[i] === 1);
     });
@@ -199,14 +222,25 @@ function updatePrediction() {
 function updateStats() {
     document.getElementById('epochCount').textContent = Math.floor(network.epoch / IMAGE_DATASET.length);
 
-    let correct = 0;
+    // Training accuracy
+    let trainCorrect = 0;
     IMAGE_DATASET.forEach(ex => {
         const predicted = network.classify(ex.inputs);
         const expected = ex.targets.indexOf(1);
-        if (predicted === expected) correct++;
+        if (predicted === expected) trainCorrect++;
     });
+    document.getElementById('trainAccuracy').textContent =
+        Math.round(trainCorrect / IMAGE_DATASET.length * 100) + '%';
 
-    document.getElementById('accuracy').textContent = Math.round(correct / IMAGE_DATASET.length * 100) + '%';
+    // Test accuracy
+    let testCorrect = 0;
+    TEST_DATASET.forEach(ex => {
+        const predicted = network.classify(ex.inputs);
+        const expected = ex.targets.indexOf(1);
+        if (predicted === expected) testCorrect++;
+    });
+    document.getElementById('testAccuracy').textContent =
+        Math.round(testCorrect / TEST_DATASET.length * 100) + '%';
 }
 
 /**
@@ -226,7 +260,7 @@ function toggleTraining() {
 function startTraining() {
     isTraining = true;
     const btn = document.getElementById('trainBtn');
-    btn.textContent = 'Stop Training';
+    btn.textContent = 'Stop';
     btn.classList.add('btn-training');
 
     trainInterval = setInterval(() => {
@@ -262,7 +296,7 @@ function stopTraining() {
     }
 
     const btn = document.getElementById('trainBtn');
-    btn.textContent = 'Train Network';
+    btn.textContent = 'Train';
     btn.classList.remove('btn-training');
 }
 
@@ -277,6 +311,110 @@ function resetNetwork() {
     updatePrediction();
     updateStats();
     visualizer.update();
+}
+
+// =============================================
+// TEST MODE
+// =============================================
+
+/**
+ * Open test mode overlay
+ */
+function openTestMode() {
+    stopTraining();
+
+    // Calculate results for all test patterns
+    testResults = TEST_DATASET.map(ex => {
+        const predicted = network.classify(ex.inputs);
+        const expected = ex.targets.indexOf(1);
+        return {
+            pattern: ex,
+            predicted: predicted,
+            expected: expected,
+            correct: predicted === expected
+        };
+    });
+
+    currentTestIndex = 0;
+
+    // Update counts
+    document.getElementById('testCount').textContent = TEST_DATASET.length;
+    document.getElementById('testTotal').textContent = TEST_DATASET.length;
+
+    // Show overlay
+    document.getElementById('testOverlay').classList.remove('hidden');
+
+    // Display first test
+    displayCurrentTest();
+}
+
+/**
+ * Close test mode overlay
+ */
+function closeTestMode() {
+    document.getElementById('testOverlay').classList.add('hidden');
+}
+
+/**
+ * Display current test pattern and result
+ */
+function displayCurrentTest() {
+    const result = testResults[currentTestIndex];
+    const pattern = result.pattern;
+
+    // Update test grid
+    const pixels = document.querySelectorAll('#testGrid .pixel');
+    pixels.forEach((pixel, i) => {
+        pixel.classList.toggle('active', pattern.inputs[i] === 1);
+    });
+
+    // Update pattern name
+    document.getElementById('testPatternName').textContent = pattern.name;
+
+    // Update expected and predicted
+    document.getElementById('testExpected').textContent = PATTERN_NAMES[result.expected];
+    document.getElementById('testPredicted').textContent = PATTERN_NAMES[result.predicted];
+
+    // Update status
+    const statusEl = document.getElementById('testStatus');
+    if (result.correct) {
+        statusEl.textContent = 'CORRECT';
+        statusEl.className = 'test-status correct';
+    } else {
+        statusEl.textContent = 'INCORRECT';
+        statusEl.className = 'test-status incorrect';
+    }
+
+    // Update progress
+    document.getElementById('testProgress').textContent =
+        (currentTestIndex + 1) + ' / ' + TEST_DATASET.length;
+
+    // Update score
+    const score = testResults.filter(r => r.correct).length;
+    document.getElementById('testScore').textContent = score;
+
+    // Load pattern into main grid for visualization
+    loadPattern(pattern.inputs);
+}
+
+/**
+ * Show previous test pattern
+ */
+function showPrevTest() {
+    if (currentTestIndex > 0) {
+        currentTestIndex--;
+        displayCurrentTest();
+    }
+}
+
+/**
+ * Show next test pattern
+ */
+function showNextTest() {
+    if (currentTestIndex < TEST_DATASET.length - 1) {
+        currentTestIndex++;
+        displayCurrentTest();
+    }
 }
 
 // Initialize when DOM is loaded

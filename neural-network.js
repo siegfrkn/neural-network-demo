@@ -419,3 +419,147 @@ const IMAGE_DATASET = [
         name: 'Cross (thick +)'
     }
 ];
+
+// TEST DATASET - Unseen variations to test generalization
+// These patterns are similar but NOT in the training set
+const TEST_DATASET = [
+    // Horizontal variations
+    {
+        inputs: [
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 1, 1, 1, 0,  // Shorter line
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0
+        ],
+        targets: [1, 0, 0, 0],
+        name: 'Horizontal (short)'
+    },
+    {
+        inputs: [
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            1, 1, 1, 1, 0,  // Missing one pixel
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0
+        ],
+        targets: [1, 0, 0, 0],
+        name: 'Horizontal (partial)'
+    },
+    {
+        inputs: [
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            1, 1, 1, 1, 1,  // Lower position
+            0, 0, 0, 0, 0
+        ],
+        targets: [1, 0, 0, 0],
+        name: 'Horizontal (lower)'
+    },
+
+    // Vertical variations
+    {
+        inputs: [
+            0, 0, 0, 1, 0,  // Different column
+            0, 0, 0, 1, 0,
+            0, 0, 0, 1, 0,
+            0, 0, 0, 1, 0,
+            0, 0, 0, 1, 0
+        ],
+        targets: [0, 1, 0, 0],
+        name: 'Vertical (right-center)'
+    },
+    {
+        inputs: [
+            0, 0, 1, 0, 0,
+            0, 0, 1, 0, 0,
+            0, 0, 0, 0, 0,  // Gap in middle
+            0, 0, 1, 0, 0,
+            0, 0, 1, 0, 0
+        ],
+        targets: [0, 1, 0, 0],
+        name: 'Vertical (with gap)'
+    },
+    {
+        inputs: [
+            0, 0, 0, 0, 0,
+            0, 0, 1, 0, 0,  // Shorter
+            0, 0, 1, 0, 0,
+            0, 0, 1, 0, 0,
+            0, 0, 0, 0, 0
+        ],
+        targets: [0, 1, 0, 0],
+        name: 'Vertical (short)'
+    },
+
+    // Diagonal variations
+    {
+        inputs: [
+            0, 1, 0, 0, 0,  // Shifted diagonal
+            0, 0, 1, 0, 0,
+            0, 0, 0, 1, 0,
+            0, 0, 0, 0, 1,
+            0, 0, 0, 0, 0
+        ],
+        targets: [0, 0, 1, 0],
+        name: 'Diagonal (shifted)'
+    },
+    {
+        inputs: [
+            1, 0, 0, 0, 0,
+            0, 1, 0, 0, 0,
+            0, 0, 0, 0, 0,  // Partial diagonal
+            0, 0, 0, 1, 0,
+            0, 0, 0, 0, 1
+        ],
+        targets: [0, 0, 1, 0],
+        name: 'Diagonal (broken)'
+    },
+    {
+        inputs: [
+            0, 0, 0, 1, 0,  // Short anti-diagonal
+            0, 0, 1, 0, 0,
+            0, 1, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0
+        ],
+        targets: [0, 0, 1, 0],
+        name: 'Diagonal (short /)'
+    },
+
+    // Cross variations
+    {
+        inputs: [
+            1, 0, 0, 0, 1,
+            0, 1, 0, 1, 0,
+            0, 0, 0, 0, 0,  // X without center
+            0, 1, 0, 1, 0,
+            1, 0, 0, 0, 1
+        ],
+        targets: [0, 0, 0, 1],
+        name: 'Cross (hollow X)'
+    },
+    {
+        inputs: [
+            0, 0, 1, 0, 0,
+            0, 0, 1, 0, 0,
+            1, 1, 0, 1, 1,  // + without center
+            0, 0, 1, 0, 0,
+            0, 0, 1, 0, 0
+        ],
+        targets: [0, 0, 0, 1],
+        name: 'Cross (hollow +)'
+    },
+    {
+        inputs: [
+            0, 0, 1, 0, 0,
+            0, 1, 1, 1, 0,  // Small +
+            1, 1, 1, 1, 1,
+            0, 1, 1, 1, 0,
+            0, 0, 0, 0, 0   // Asymmetric
+        ],
+        targets: [0, 0, 0, 1],
+        name: 'Cross (offset +)'
+    }
+];

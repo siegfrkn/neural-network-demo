@@ -11,7 +11,7 @@
         <!-- Header -->
         <header>
             <h1>Neural Network Pattern Recognition</h1>
-            <p class="subtitle">Watch pathways strengthen as the network learns</p>
+            <p class="subtitle">Train a model, then test it on patterns it's never seen</p>
         </header>
 
         <!-- Main Content - Three Column Layout -->
@@ -31,7 +31,7 @@
 
             <!-- Center: Network Visualization -->
             <section class="panel viz-panel">
-                <canvas id="networkCanvas" width="500" height="380"></canvas>
+                <canvas id="networkCanvas" width="500" height="340"></canvas>
                 <div class="layer-labels" id="layerLabels">
                     <span class="label input-label">Input (25)</span>
                     <span class="label hidden-label">Hidden (16)</span>
@@ -40,7 +40,7 @@
                 </div>
             </section>
 
-            <!-- Right: Prediction & Training -->
+            <!-- Right: Prediction & Controls -->
             <section class="panel control-panel">
                 <div class="prediction-area">
                     <h2>Network Output</h2>
@@ -50,20 +50,28 @@
                     </div>
                 </div>
 
+                <!-- Accuracy Comparison -->
+                <div class="accuracy-comparison">
+                    <div class="accuracy-row">
+                        <span class="accuracy-label">Train Accuracy:</span>
+                        <span class="accuracy-value" id="trainAccuracy">0%</span>
+                    </div>
+                    <div class="accuracy-row">
+                        <span class="accuracy-label">Test Accuracy:</span>
+                        <span class="accuracy-value test" id="testAccuracy">0%</span>
+                    </div>
+                </div>
+
+                <!-- Training Controls -->
                 <div class="training-area">
-                    <div class="stats-row">
-                        <div class="stat">
-                            <span class="stat-value" id="epochCount">0</span>
-                            <span class="stat-label">Epochs</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-value" id="accuracy">0%</span>
-                            <span class="stat-label">Accuracy</span>
-                        </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Epochs:</span>
+                        <span class="stat-value" id="epochCount">0</span>
                     </div>
 
                     <div class="training-controls">
-                        <button id="trainBtn" class="btn btn-primary btn-train">Train Network</button>
+                        <button id="trainBtn" class="btn btn-primary btn-train">Train</button>
+                        <button id="testBtn" class="btn btn-test">Test</button>
                         <button id="resetBtn" class="btn btn-secondary">Reset</button>
                     </div>
 
@@ -74,6 +82,44 @@
                 </div>
             </section>
         </main>
+
+        <!-- Test Results Modal/Overlay -->
+        <div id="testOverlay" class="test-overlay hidden">
+            <div class="test-panel">
+                <h2>Test Mode: Unseen Patterns</h2>
+                <p class="test-description">Testing on <span id="testCount">12</span> patterns the network has never seen during training</p>
+
+                <div class="test-content">
+                    <div class="test-pattern-display">
+                        <div class="test-grid" id="testGrid"></div>
+                        <span class="test-pattern-name" id="testPatternName">-</span>
+                    </div>
+
+                    <div class="test-result">
+                        <div class="test-expected">
+                            Expected: <span id="testExpected">-</span>
+                        </div>
+                        <div class="test-predicted">
+                            Predicted: <span id="testPredicted">-</span>
+                        </div>
+                        <div class="test-status" id="testStatus">-</div>
+                    </div>
+                </div>
+
+                <div class="test-progress">
+                    <span id="testProgress">0 / 12</span>
+                    <div class="test-score">
+                        Score: <span id="testScore">0</span> / <span id="testTotal">12</span>
+                    </div>
+                </div>
+
+                <div class="test-controls">
+                    <button id="testPrevBtn" class="btn btn-secondary">Previous</button>
+                    <button id="testNextBtn" class="btn btn-primary">Next</button>
+                    <button id="testCloseBtn" class="btn btn-secondary">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="neural-network.js"></script>
