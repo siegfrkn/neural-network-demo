@@ -234,332 +234,105 @@ const LOGIC_DATASETS = {
 
 const PATTERN_NAMES = ['Horizontal', 'Vertical', 'Diagonal', 'Cross'];
 
+// EXPANDED TRAINING DATASET - More variations = better generalization
 const IMAGE_DATASET = [
-    // Horizontal lines (target: [1, 0, 0, 0])
-    {
-        inputs: [
-            0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0,
-            1, 1, 1, 1, 1,
-            0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0
-        ],
-        targets: [1, 0, 0, 0],
-        name: 'Horizontal (center)'
-    },
-    {
-        inputs: [
-            1, 1, 1, 1, 1,
-            0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0
-        ],
-        targets: [1, 0, 0, 0],
-        name: 'Horizontal (top)'
-    },
-    {
-        inputs: [
-            0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0,
-            1, 1, 1, 1, 1
-        ],
-        targets: [1, 0, 0, 0],
-        name: 'Horizontal (bottom)'
-    },
-    {
-        inputs: [
-            0, 0, 0, 0, 0,
-            1, 1, 1, 1, 1,
-            0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0
-        ],
-        targets: [1, 0, 0, 0],
-        name: 'Horizontal (upper)'
-    },
+    // ============ HORIZONTAL LINES ============
+    // Full lines at every row
+    { inputs: [1,1,1,1,1, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0], targets: [1,0,0,0], name: 'H row 0' },
+    { inputs: [0,0,0,0,0, 1,1,1,1,1, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0], targets: [1,0,0,0], name: 'H row 1' },
+    { inputs: [0,0,0,0,0, 0,0,0,0,0, 1,1,1,1,1, 0,0,0,0,0, 0,0,0,0,0], targets: [1,0,0,0], name: 'H row 2' },
+    { inputs: [0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 1,1,1,1,1, 0,0,0,0,0], targets: [1,0,0,0], name: 'H row 3' },
+    { inputs: [0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 1,1,1,1,1], targets: [1,0,0,0], name: 'H row 4' },
+    // Partial lines (4 pixels)
+    { inputs: [0,0,0,0,0, 0,0,0,0,0, 1,1,1,1,0, 0,0,0,0,0, 0,0,0,0,0], targets: [1,0,0,0], name: 'H partial L' },
+    { inputs: [0,0,0,0,0, 0,0,0,0,0, 0,1,1,1,1, 0,0,0,0,0, 0,0,0,0,0], targets: [1,0,0,0], name: 'H partial R' },
+    { inputs: [0,0,0,0,0, 1,1,1,1,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0], targets: [1,0,0,0], name: 'H partial top' },
+    { inputs: [0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,1,1,1,1, 0,0,0,0,0], targets: [1,0,0,0], name: 'H partial bot' },
+    // Short lines (3 pixels)
+    { inputs: [0,0,0,0,0, 0,0,0,0,0, 0,1,1,1,0, 0,0,0,0,0, 0,0,0,0,0], targets: [1,0,0,0], name: 'H short ctr' },
+    { inputs: [0,0,0,0,0, 0,1,1,1,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0], targets: [1,0,0,0], name: 'H short top' },
+    { inputs: [0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,1,1,1,0, 0,0,0,0,0], targets: [1,0,0,0], name: 'H short bot' },
+    { inputs: [0,0,0,0,0, 0,0,0,0,0, 1,1,1,0,0, 0,0,0,0,0, 0,0,0,0,0], targets: [1,0,0,0], name: 'H short L' },
+    { inputs: [0,0,0,0,0, 0,0,0,0,0, 0,0,1,1,1, 0,0,0,0,0, 0,0,0,0,0], targets: [1,0,0,0], name: 'H short R' },
 
-    // Vertical lines (target: [0, 1, 0, 0])
-    {
-        inputs: [
-            0, 0, 1, 0, 0,
-            0, 0, 1, 0, 0,
-            0, 0, 1, 0, 0,
-            0, 0, 1, 0, 0,
-            0, 0, 1, 0, 0
-        ],
-        targets: [0, 1, 0, 0],
-        name: 'Vertical (center)'
-    },
-    {
-        inputs: [
-            1, 0, 0, 0, 0,
-            1, 0, 0, 0, 0,
-            1, 0, 0, 0, 0,
-            1, 0, 0, 0, 0,
-            1, 0, 0, 0, 0
-        ],
-        targets: [0, 1, 0, 0],
-        name: 'Vertical (left)'
-    },
-    {
-        inputs: [
-            0, 0, 0, 0, 1,
-            0, 0, 0, 0, 1,
-            0, 0, 0, 0, 1,
-            0, 0, 0, 0, 1,
-            0, 0, 0, 0, 1
-        ],
-        targets: [0, 1, 0, 0],
-        name: 'Vertical (right)'
-    },
-    {
-        inputs: [
-            0, 1, 0, 0, 0,
-            0, 1, 0, 0, 0,
-            0, 1, 0, 0, 0,
-            0, 1, 0, 0, 0,
-            0, 1, 0, 0, 0
-        ],
-        targets: [0, 1, 0, 0],
-        name: 'Vertical (left-center)'
-    },
+    // ============ VERTICAL LINES ============
+    // Full lines at every column
+    { inputs: [1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,0], targets: [0,1,0,0], name: 'V col 0' },
+    { inputs: [0,1,0,0,0, 0,1,0,0,0, 0,1,0,0,0, 0,1,0,0,0, 0,1,0,0,0], targets: [0,1,0,0], name: 'V col 1' },
+    { inputs: [0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0], targets: [0,1,0,0], name: 'V col 2' },
+    { inputs: [0,0,0,1,0, 0,0,0,1,0, 0,0,0,1,0, 0,0,0,1,0, 0,0,0,1,0], targets: [0,1,0,0], name: 'V col 3' },
+    { inputs: [0,0,0,0,1, 0,0,0,0,1, 0,0,0,0,1, 0,0,0,0,1, 0,0,0,0,1], targets: [0,1,0,0], name: 'V col 4' },
+    // Partial lines (4 pixels)
+    { inputs: [0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,0,0,0], targets: [0,1,0,0], name: 'V partial top' },
+    { inputs: [0,0,0,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0], targets: [0,1,0,0], name: 'V partial bot' },
+    { inputs: [0,1,0,0,0, 0,1,0,0,0, 0,1,0,0,0, 0,1,0,0,0, 0,0,0,0,0], targets: [0,1,0,0], name: 'V partial L' },
+    { inputs: [0,0,0,0,0, 0,0,0,1,0, 0,0,0,1,0, 0,0,0,1,0, 0,0,0,1,0], targets: [0,1,0,0], name: 'V partial R' },
+    // Short lines (3 pixels)
+    { inputs: [0,0,0,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,0,0,0], targets: [0,1,0,0], name: 'V short ctr' },
+    { inputs: [0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,0,0,0, 0,0,0,0,0], targets: [0,1,0,0], name: 'V short top' },
+    { inputs: [0,0,0,0,0, 0,0,0,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0], targets: [0,1,0,0], name: 'V short bot' },
+    { inputs: [0,0,0,0,0, 0,1,0,0,0, 0,1,0,0,0, 0,1,0,0,0, 0,0,0,0,0], targets: [0,1,0,0], name: 'V short L' },
+    { inputs: [0,0,0,0,0, 0,0,0,1,0, 0,0,0,1,0, 0,0,0,1,0, 0,0,0,0,0], targets: [0,1,0,0], name: 'V short R' },
 
-    // Diagonal lines (target: [0, 0, 1, 0])
-    {
-        inputs: [
-            1, 0, 0, 0, 0,
-            0, 1, 0, 0, 0,
-            0, 0, 1, 0, 0,
-            0, 0, 0, 1, 0,
-            0, 0, 0, 0, 1
-        ],
-        targets: [0, 0, 1, 0],
-        name: 'Diagonal (\\)'
-    },
-    {
-        inputs: [
-            0, 0, 0, 0, 1,
-            0, 0, 0, 1, 0,
-            0, 0, 1, 0, 0,
-            0, 1, 0, 0, 0,
-            1, 0, 0, 0, 0
-        ],
-        targets: [0, 0, 1, 0],
-        name: 'Diagonal (/)'
-    },
-    {
-        inputs: [
-            1, 0, 0, 0, 0,
-            1, 1, 0, 0, 0,
-            0, 1, 1, 0, 0,
-            0, 0, 1, 1, 0,
-            0, 0, 0, 1, 1
-        ],
-        targets: [0, 0, 1, 0],
-        name: 'Diagonal (thick \\)'
-    },
-    {
-        inputs: [
-            0, 0, 0, 0, 1,
-            0, 0, 0, 1, 1,
-            0, 0, 1, 1, 0,
-            0, 1, 1, 0, 0,
-            1, 1, 0, 0, 0
-        ],
-        targets: [0, 0, 1, 0],
-        name: 'Diagonal (thick /)'
-    },
+    // ============ DIAGONAL LINES ============
+    // Main diagonals
+    { inputs: [1,0,0,0,0, 0,1,0,0,0, 0,0,1,0,0, 0,0,0,1,0, 0,0,0,0,1], targets: [0,0,1,0], name: 'D \\ main' },
+    { inputs: [0,0,0,0,1, 0,0,0,1,0, 0,0,1,0,0, 0,1,0,0,0, 1,0,0,0,0], targets: [0,0,1,0], name: 'D / main' },
+    // Thick diagonals
+    { inputs: [1,1,0,0,0, 1,1,1,0,0, 0,1,1,1,0, 0,0,1,1,1, 0,0,0,1,1], targets: [0,0,1,0], name: 'D \\ thick' },
+    { inputs: [0,0,0,1,1, 0,0,1,1,1, 0,1,1,1,0, 1,1,1,0,0, 1,1,0,0,0], targets: [0,0,1,0], name: 'D / thick' },
+    // Shifted diagonals
+    { inputs: [0,1,0,0,0, 0,0,1,0,0, 0,0,0,1,0, 0,0,0,0,1, 0,0,0,0,0], targets: [0,0,1,0], name: 'D \\ shift R' },
+    { inputs: [0,0,0,0,0, 1,0,0,0,0, 0,1,0,0,0, 0,0,1,0,0, 0,0,0,1,0], targets: [0,0,1,0], name: 'D \\ shift D' },
+    { inputs: [0,0,0,1,0, 0,0,1,0,0, 0,1,0,0,0, 1,0,0,0,0, 0,0,0,0,0], targets: [0,0,1,0], name: 'D / shift L' },
+    { inputs: [0,0,0,0,0, 0,0,0,0,1, 0,0,0,1,0, 0,0,1,0,0, 0,1,0,0,0], targets: [0,0,1,0], name: 'D / shift D' },
+    // Partial diagonals (4 pixels)
+    { inputs: [1,0,0,0,0, 0,1,0,0,0, 0,0,1,0,0, 0,0,0,1,0, 0,0,0,0,0], targets: [0,0,1,0], name: 'D \\ partial' },
+    { inputs: [0,0,0,0,0, 0,0,0,1,0, 0,0,1,0,0, 0,1,0,0,0, 1,0,0,0,0], targets: [0,0,1,0], name: 'D / partial' },
+    // Short diagonals (3 pixels)
+    { inputs: [0,0,0,0,0, 0,1,0,0,0, 0,0,1,0,0, 0,0,0,1,0, 0,0,0,0,0], targets: [0,0,1,0], name: 'D \\ short' },
+    { inputs: [0,0,0,0,0, 0,0,0,1,0, 0,0,1,0,0, 0,1,0,0,0, 0,0,0,0,0], targets: [0,0,1,0], name: 'D / short' },
+    { inputs: [1,0,0,0,0, 0,1,0,0,0, 0,0,1,0,0, 0,0,0,0,0, 0,0,0,0,0], targets: [0,0,1,0], name: 'D \\ corner' },
+    { inputs: [0,0,0,0,1, 0,0,0,1,0, 0,0,1,0,0, 0,0,0,0,0, 0,0,0,0,0], targets: [0,0,1,0], name: 'D / corner' },
 
-    // Cross / X pattern (target: [0, 0, 0, 1])
-    {
-        inputs: [
-            1, 0, 0, 0, 1,
-            0, 1, 0, 1, 0,
-            0, 0, 1, 0, 0,
-            0, 1, 0, 1, 0,
-            1, 0, 0, 0, 1
-        ],
-        targets: [0, 0, 0, 1],
-        name: 'Cross (X)'
-    },
-    {
-        inputs: [
-            0, 0, 1, 0, 0,
-            0, 0, 1, 0, 0,
-            1, 1, 1, 1, 1,
-            0, 0, 1, 0, 0,
-            0, 0, 1, 0, 0
-        ],
-        targets: [0, 0, 0, 1],
-        name: 'Cross (+)'
-    },
-    {
-        inputs: [
-            1, 0, 0, 0, 1,
-            0, 1, 0, 1, 0,
-            0, 0, 1, 0, 0,
-            0, 1, 0, 1, 0,
-            1, 0, 0, 0, 1
-        ],
-        targets: [0, 0, 0, 1],
-        name: 'Cross (X) variant'
-    },
-    {
-        inputs: [
-            0, 0, 1, 0, 0,
-            0, 1, 1, 1, 0,
-            1, 1, 1, 1, 1,
-            0, 1, 1, 1, 0,
-            0, 0, 1, 0, 0
-        ],
-        targets: [0, 0, 0, 1],
-        name: 'Cross (thick +)'
-    }
+    // ============ CROSS PATTERNS ============
+    // X patterns
+    { inputs: [1,0,0,0,1, 0,1,0,1,0, 0,0,1,0,0, 0,1,0,1,0, 1,0,0,0,1], targets: [0,0,0,1], name: 'X full' },
+    { inputs: [1,0,0,0,1, 0,1,0,1,0, 0,0,0,0,0, 0,1,0,1,0, 1,0,0,0,1], targets: [0,0,0,1], name: 'X hollow' },
+    { inputs: [0,0,0,0,0, 0,1,0,1,0, 0,0,1,0,0, 0,1,0,1,0, 0,0,0,0,0], targets: [0,0,0,1], name: 'X small' },
+    // + patterns
+    { inputs: [0,0,1,0,0, 0,0,1,0,0, 1,1,1,1,1, 0,0,1,0,0, 0,0,1,0,0], targets: [0,0,0,1], name: '+ full' },
+    { inputs: [0,0,1,0,0, 0,0,1,0,0, 1,1,0,1,1, 0,0,1,0,0, 0,0,1,0,0], targets: [0,0,0,1], name: '+ hollow' },
+    { inputs: [0,0,0,0,0, 0,0,1,0,0, 0,1,1,1,0, 0,0,1,0,0, 0,0,0,0,0], targets: [0,0,0,1], name: '+ small' },
+    // Thick crosses
+    { inputs: [0,0,1,0,0, 0,1,1,1,0, 1,1,1,1,1, 0,1,1,1,0, 0,0,1,0,0], targets: [0,0,0,1], name: '+ thick' },
+    { inputs: [1,0,0,0,1, 1,1,0,1,1, 0,0,1,0,0, 1,1,0,1,1, 1,0,0,0,1], targets: [0,0,0,1], name: 'X thick' },
+    // Offset crosses
+    { inputs: [0,1,0,0,0, 0,1,0,0,0, 1,1,1,1,0, 0,1,0,0,0, 0,1,0,0,0], targets: [0,0,0,1], name: '+ offset L' },
+    { inputs: [0,0,0,1,0, 0,0,0,1,0, 0,1,1,1,1, 0,0,0,1,0, 0,0,0,1,0], targets: [0,0,0,1], name: '+ offset R' },
+    { inputs: [0,0,1,0,0, 1,1,1,1,1, 0,0,1,0,0, 0,0,1,0,0, 0,0,0,0,0], targets: [0,0,0,1], name: '+ offset T' },
+    { inputs: [0,0,0,0,0, 0,0,1,0,0, 0,0,1,0,0, 1,1,1,1,1, 0,0,1,0,0], targets: [0,0,0,1], name: '+ offset B' }
 ];
 
 // TEST DATASET - Unseen variations to test generalization
-// These patterns are similar but NOT in the training set
 const TEST_DATASET = [
-    // Horizontal variations
-    {
-        inputs: [
-            0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0,
-            0, 1, 1, 1, 0,  // Shorter line
-            0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0
-        ],
-        targets: [1, 0, 0, 0],
-        name: 'Horizontal (short)'
-    },
-    {
-        inputs: [
-            0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0,
-            1, 1, 1, 1, 0,  // Missing one pixel
-            0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0
-        ],
-        targets: [1, 0, 0, 0],
-        name: 'Horizontal (partial)'
-    },
-    {
-        inputs: [
-            0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0,
-            1, 1, 1, 1, 1,  // Lower position
-            0, 0, 0, 0, 0
-        ],
-        targets: [1, 0, 0, 0],
-        name: 'Horizontal (lower)'
-    },
+    // Horizontal tests
+    { inputs: [0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 1,1,1,1,0, 0,0,0,0,0], targets: [1,0,0,0], name: 'H test 1' },
+    { inputs: [1,1,1,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0], targets: [1,0,0,0], name: 'H test 2' },
+    { inputs: [0,0,0,0,0, 0,0,1,1,1, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0], targets: [1,0,0,0], name: 'H test 3' },
 
-    // Vertical variations
-    {
-        inputs: [
-            0, 0, 0, 1, 0,  // Different column
-            0, 0, 0, 1, 0,
-            0, 0, 0, 1, 0,
-            0, 0, 0, 1, 0,
-            0, 0, 0, 1, 0
-        ],
-        targets: [0, 1, 0, 0],
-        name: 'Vertical (right-center)'
-    },
-    {
-        inputs: [
-            0, 0, 1, 0, 0,
-            0, 0, 1, 0, 0,
-            0, 0, 0, 0, 0,  // Gap in middle
-            0, 0, 1, 0, 0,
-            0, 0, 1, 0, 0
-        ],
-        targets: [0, 1, 0, 0],
-        name: 'Vertical (with gap)'
-    },
-    {
-        inputs: [
-            0, 0, 0, 0, 0,
-            0, 0, 1, 0, 0,  // Shorter
-            0, 0, 1, 0, 0,
-            0, 0, 1, 0, 0,
-            0, 0, 0, 0, 0
-        ],
-        targets: [0, 1, 0, 0],
-        name: 'Vertical (short)'
-    },
+    // Vertical tests
+    { inputs: [0,0,0,0,0, 0,0,0,0,1, 0,0,0,0,1, 0,0,0,0,1, 0,0,0,0,0], targets: [0,1,0,0], name: 'V test 1' },
+    { inputs: [1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0], targets: [0,1,0,0], name: 'V test 2' },
+    { inputs: [0,0,0,0,0, 0,0,0,0,0, 0,1,0,0,0, 0,1,0,0,0, 0,1,0,0,0], targets: [0,1,0,0], name: 'V test 3' },
 
-    // Diagonal variations
-    {
-        inputs: [
-            0, 1, 0, 0, 0,  // Shifted diagonal
-            0, 0, 1, 0, 0,
-            0, 0, 0, 1, 0,
-            0, 0, 0, 0, 1,
-            0, 0, 0, 0, 0
-        ],
-        targets: [0, 0, 1, 0],
-        name: 'Diagonal (shifted)'
-    },
-    {
-        inputs: [
-            1, 0, 0, 0, 0,
-            0, 1, 0, 0, 0,
-            0, 0, 0, 0, 0,  // Partial diagonal
-            0, 0, 0, 1, 0,
-            0, 0, 0, 0, 1
-        ],
-        targets: [0, 0, 1, 0],
-        name: 'Diagonal (broken)'
-    },
-    {
-        inputs: [
-            0, 0, 0, 1, 0,  // Short anti-diagonal
-            0, 0, 1, 0, 0,
-            0, 1, 0, 0, 0,
-            0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0
-        ],
-        targets: [0, 0, 1, 0],
-        name: 'Diagonal (short /)'
-    },
+    // Diagonal tests
+    { inputs: [0,0,0,0,0, 0,0,0,0,0, 1,0,0,0,0, 0,1,0,0,0, 0,0,1,0,0], targets: [0,0,1,0], name: 'D test 1' },
+    { inputs: [0,0,1,0,0, 0,0,0,1,0, 0,0,0,0,1, 0,0,0,0,0, 0,0,0,0,0], targets: [0,0,1,0], name: 'D test 2' },
+    { inputs: [0,0,0,0,0, 0,0,0,0,0, 0,0,1,0,0, 0,1,0,0,0, 1,0,0,0,0], targets: [0,0,1,0], name: 'D test 3' },
 
-    // Cross variations
-    {
-        inputs: [
-            1, 0, 0, 0, 1,
-            0, 1, 0, 1, 0,
-            0, 0, 0, 0, 0,  // X without center
-            0, 1, 0, 1, 0,
-            1, 0, 0, 0, 1
-        ],
-        targets: [0, 0, 0, 1],
-        name: 'Cross (hollow X)'
-    },
-    {
-        inputs: [
-            0, 0, 1, 0, 0,
-            0, 0, 1, 0, 0,
-            1, 1, 0, 1, 1,  // + without center
-            0, 0, 1, 0, 0,
-            0, 0, 1, 0, 0
-        ],
-        targets: [0, 0, 0, 1],
-        name: 'Cross (hollow +)'
-    },
-    {
-        inputs: [
-            0, 0, 1, 0, 0,
-            0, 1, 1, 1, 0,  // Small +
-            1, 1, 1, 1, 1,
-            0, 1, 1, 1, 0,
-            0, 0, 0, 0, 0   // Asymmetric
-        ],
-        targets: [0, 0, 0, 1],
-        name: 'Cross (offset +)'
-    }
+    // Cross tests
+    { inputs: [0,0,0,0,0, 0,1,0,1,0, 0,0,1,0,0, 0,1,0,1,0, 0,0,0,0,0], targets: [0,0,0,1], name: 'X test 1' },
+    { inputs: [0,0,1,0,0, 0,1,1,1,0, 0,0,1,0,0, 0,0,0,0,0, 0,0,0,0,0], targets: [0,0,0,1], name: '+ test 1' },
+    { inputs: [0,0,0,0,0, 0,0,1,0,0, 1,1,1,0,0, 0,0,1,0,0, 0,0,1,0,0], targets: [0,0,0,1], name: '+ test 2' }
 ];
