@@ -254,6 +254,16 @@ const IMAGE_DATASET = [
     { inputs: [0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,1,1,1,0, 0,0,0,0,0], targets: [1,0,0,0], name: 'H short bot' },
     { inputs: [0,0,0,0,0, 0,0,0,0,0, 1,1,1,0,0, 0,0,0,0,0, 0,0,0,0,0], targets: [1,0,0,0], name: 'H short L' },
     { inputs: [0,0,0,0,0, 0,0,0,0,0, 0,0,1,1,1, 0,0,0,0,0, 0,0,0,0,0], targets: [1,0,0,0], name: 'H short R' },
+    // Broken lines (gap in middle)
+    { inputs: [0,0,0,0,0, 0,0,0,0,0, 1,1,0,1,1, 0,0,0,0,0, 0,0,0,0,0], targets: [1,0,0,0], name: 'H broken ctr' },
+    { inputs: [1,0,1,1,1, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0], targets: [1,0,0,0], name: 'H broken L' },
+    { inputs: [0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 1,1,1,0,1, 0,0,0,0,0], targets: [1,0,0,0], name: 'H broken R' },
+    // Double horizontal lines
+    { inputs: [1,1,1,1,1, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 1,1,1,1,1], targets: [1,0,0,0], name: 'H double' },
+    { inputs: [0,0,0,0,0, 1,1,1,1,1, 0,0,0,0,0, 1,1,1,1,1, 0,0,0,0,0], targets: [1,0,0,0], name: 'H double mid' },
+    // Thick horizontal (2 rows)
+    { inputs: [0,0,0,0,0, 1,1,1,1,1, 1,1,1,1,1, 0,0,0,0,0, 0,0,0,0,0], targets: [1,0,0,0], name: 'H thick' },
+    { inputs: [0,0,0,0,0, 0,0,0,0,0, 1,1,1,1,1, 1,1,1,1,1, 0,0,0,0,0], targets: [1,0,0,0], name: 'H thick low' },
 
     // ============ VERTICAL LINES ============
     // Full lines at every column
@@ -273,6 +283,16 @@ const IMAGE_DATASET = [
     { inputs: [0,0,0,0,0, 0,0,0,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0], targets: [0,1,0,0], name: 'V short bot' },
     { inputs: [0,0,0,0,0, 0,1,0,0,0, 0,1,0,0,0, 0,1,0,0,0, 0,0,0,0,0], targets: [0,1,0,0], name: 'V short L' },
     { inputs: [0,0,0,0,0, 0,0,0,1,0, 0,0,0,1,0, 0,0,0,1,0, 0,0,0,0,0], targets: [0,1,0,0], name: 'V short R' },
+    // Broken lines (gap in middle)
+    { inputs: [0,0,1,0,0, 0,0,1,0,0, 0,0,0,0,0, 0,0,1,0,0, 0,0,1,0,0], targets: [0,1,0,0], name: 'V broken ctr' },
+    { inputs: [1,0,0,0,0, 0,0,0,0,0, 1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,0], targets: [0,1,0,0], name: 'V broken top' },
+    { inputs: [0,0,0,0,1, 0,0,0,0,1, 0,0,0,0,1, 0,0,0,0,0, 0,0,0,0,1], targets: [0,1,0,0], name: 'V broken bot' },
+    // Double vertical lines
+    { inputs: [1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1], targets: [0,1,0,0], name: 'V double' },
+    { inputs: [0,1,0,1,0, 0,1,0,1,0, 0,1,0,1,0, 0,1,0,1,0, 0,1,0,1,0], targets: [0,1,0,0], name: 'V double mid' },
+    // Thick vertical (2 cols)
+    { inputs: [0,1,1,0,0, 0,1,1,0,0, 0,1,1,0,0, 0,1,1,0,0, 0,1,1,0,0], targets: [0,1,0,0], name: 'V thick' },
+    { inputs: [0,0,1,1,0, 0,0,1,1,0, 0,0,1,1,0, 0,0,1,1,0, 0,0,1,1,0], targets: [0,1,0,0], name: 'V thick R' },
 
     // ============ DIAGONAL LINES ============
     // Main diagonals
@@ -294,6 +314,15 @@ const IMAGE_DATASET = [
     { inputs: [0,0,0,0,0, 0,0,0,1,0, 0,0,1,0,0, 0,1,0,0,0, 0,0,0,0,0], targets: [0,0,1,0], name: 'D / short' },
     { inputs: [1,0,0,0,0, 0,1,0,0,0, 0,0,1,0,0, 0,0,0,0,0, 0,0,0,0,0], targets: [0,0,1,0], name: 'D \\ corner' },
     { inputs: [0,0,0,0,1, 0,0,0,1,0, 0,0,1,0,0, 0,0,0,0,0, 0,0,0,0,0], targets: [0,0,1,0], name: 'D / corner' },
+    // Broken diagonals
+    { inputs: [1,0,0,0,0, 0,1,0,0,0, 0,0,0,0,0, 0,0,0,1,0, 0,0,0,0,1], targets: [0,0,1,0], name: 'D \\ broken' },
+    { inputs: [0,0,0,0,1, 0,0,0,1,0, 0,0,0,0,0, 0,1,0,0,0, 1,0,0,0,0], targets: [0,0,1,0], name: 'D / broken' },
+    // Double diagonals (parallel)
+    { inputs: [1,1,0,0,0, 0,1,1,0,0, 0,0,1,1,0, 0,0,0,1,1, 0,0,0,0,1], targets: [0,0,1,0], name: 'D \\ double' },
+    { inputs: [0,0,0,1,1, 0,0,1,1,0, 0,1,1,0,0, 1,1,0,0,0, 1,0,0,0,0], targets: [0,0,1,0], name: 'D / double' },
+    // Corner diagonals
+    { inputs: [0,0,0,0,0, 0,0,0,0,0, 0,0,1,0,0, 0,0,0,1,0, 0,0,0,0,1], targets: [0,0,1,0], name: 'D \\ corner BR' },
+    { inputs: [0,0,0,0,0, 0,0,0,0,0, 0,0,1,0,0, 0,1,0,0,0, 1,0,0,0,0], targets: [0,0,1,0], name: 'D / corner BL' },
 
     // ============ CROSS PATTERNS ============
     // X patterns
@@ -311,7 +340,18 @@ const IMAGE_DATASET = [
     { inputs: [0,1,0,0,0, 0,1,0,0,0, 1,1,1,1,0, 0,1,0,0,0, 0,1,0,0,0], targets: [0,0,0,1], name: '+ offset L' },
     { inputs: [0,0,0,1,0, 0,0,0,1,0, 0,1,1,1,1, 0,0,0,1,0, 0,0,0,1,0], targets: [0,0,0,1], name: '+ offset R' },
     { inputs: [0,0,1,0,0, 1,1,1,1,1, 0,0,1,0,0, 0,0,1,0,0, 0,0,0,0,0], targets: [0,0,0,1], name: '+ offset T' },
-    { inputs: [0,0,0,0,0, 0,0,1,0,0, 0,0,1,0,0, 1,1,1,1,1, 0,0,1,0,0], targets: [0,0,0,1], name: '+ offset B' }
+    { inputs: [0,0,0,0,0, 0,0,1,0,0, 0,0,1,0,0, 1,1,1,1,1, 0,0,1,0,0], targets: [0,0,0,1], name: '+ offset B' },
+    // Broken crosses
+    { inputs: [0,0,1,0,0, 0,0,0,0,0, 1,1,1,1,1, 0,0,0,0,0, 0,0,1,0,0], targets: [0,0,0,1], name: '+ broken V' },
+    { inputs: [0,0,1,0,0, 0,0,1,0,0, 1,0,1,0,1, 0,0,1,0,0, 0,0,1,0,0], targets: [0,0,0,1], name: '+ broken H' },
+    // Small X variations
+    { inputs: [1,0,0,0,1, 0,1,0,1,0, 0,0,1,0,0, 0,0,0,0,0, 0,0,0,0,0], targets: [0,0,0,1], name: 'X top half' },
+    { inputs: [0,0,0,0,0, 0,0,0,0,0, 0,0,1,0,0, 0,1,0,1,0, 1,0,0,0,1], targets: [0,0,0,1], name: 'X bot half' },
+    // T-shapes (still crosses)
+    { inputs: [1,1,1,1,1, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0], targets: [0,0,0,1], name: 'T down' },
+    { inputs: [0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 1,1,1,1,1], targets: [0,0,0,1], name: 'T up' },
+    { inputs: [1,0,0,0,0, 1,0,0,0,0, 1,1,1,1,1, 1,0,0,0,0, 1,0,0,0,0], targets: [0,0,0,1], name: 'T right' },
+    { inputs: [0,0,0,0,1, 0,0,0,0,1, 1,1,1,1,1, 0,0,0,0,1, 0,0,0,0,1], targets: [0,0,0,1], name: 'T left' }
 ];
 
 // TEST DATASET - Unseen variations to test generalization

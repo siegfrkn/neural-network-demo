@@ -279,7 +279,9 @@ function startTraining() {
             if (network.classify(ex.inputs) === ex.targets.indexOf(1)) correct++;
         });
 
-        if (correct === IMAGE_DATASET.length || network.epoch > 100000) {
+        // Cap at 1000 epochs (epoch count = network.epoch / dataset size)
+        const maxEpochs = 1000 * IMAGE_DATASET.length;
+        if (correct === IMAGE_DATASET.length || network.epoch > maxEpochs) {
             stopTraining();
         }
     }, 50);
