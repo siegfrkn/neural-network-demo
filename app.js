@@ -121,13 +121,11 @@ function loadPattern(pattern) {
 function buildPatternSamples() {
     const container = document.getElementById('patternSamples');
 
-    // Show 4 samples, one of each type
-    const samples = [
-        IMAGE_DATASET[0],  // Horizontal
-        IMAGE_DATASET[4],  // Vertical
-        IMAGE_DATASET[8],  // Diagonal
-        IMAGE_DATASET[12]  // Cross
-    ];
+    // Find one sample of each type dynamically
+    const samples = PATTERN_NAMES.map((name, typeIndex) => {
+        // Find first pattern where targets[typeIndex] === 1
+        return IMAGE_DATASET.find(p => p.targets[typeIndex] === 1);
+    });
 
     samples.forEach((sample, typeIndex) => {
         const sampleDiv = document.createElement('div');
