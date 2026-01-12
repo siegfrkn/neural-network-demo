@@ -296,7 +296,7 @@ header h1 {
     font-weight: 700;
 }
 
-/* Accuracy Chart */
+/* Accuracy Chart - Featured */
 .accuracy-chart-container {
     background: var(--bg-tertiary);
     border-radius: 8px;
@@ -304,23 +304,31 @@ header h1 {
     margin-top: 10px;
 }
 
+.accuracy-chart-container.featured {
+    background: linear-gradient(135deg, var(--bg-tertiary), #1a2a4a);
+    border: 1px solid var(--accent-cyan);
+    box-shadow: 0 0 20px rgba(0, 217, 255, 0.15);
+    padding: 12px 15px;
+    margin-top: 12px;
+}
+
 .chart-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
 
 .chart-title {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--accent-cyan);
+    font-weight: 700;
 }
 
 .chart-legend {
     display: flex;
-    gap: 8px;
-    font-size: 0.65rem;
+    gap: 12px;
+    font-size: 0.75rem;
 }
 
 .legend-train {
@@ -333,33 +341,47 @@ header h1 {
 
 #accuracyChart {
     width: 100%;
-    height: 70px;
+    height: 90px;
     background: var(--bg-secondary);
-    border-radius: 4px;
-    margin-bottom: 6px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border-color);
 }
 
-.accuracy-row {
+.accuracy-stats {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 6px;
+    justify-content: space-around;
+    gap: 10px;
 }
 
-.accuracy-label {
-    font-size: 0.7rem;
+.accuracy-stat {
+    text-align: center;
+    padding: 6px 12px;
+    background: var(--bg-secondary);
+    border-radius: 6px;
+    flex: 1;
+}
+
+.accuracy-stat .accuracy-label {
+    display: block;
+    font-size: 0.65rem;
     color: var(--text-secondary);
+    margin-bottom: 2px;
 }
 
-.accuracy-value {
+.accuracy-stat .accuracy-value {
     font-family: monospace;
     font-weight: 700;
-    font-size: 0.85rem;
+    font-size: 1.1rem;
     color: var(--accent-cyan);
 }
 
-.accuracy-value.test {
+.accuracy-stat .accuracy-value.test {
     color: var(--accent-purple);
+}
+
+.accuracy-stat .accuracy-value.epochs {
+    color: var(--accent-green);
 }
 
 /* Training Area */

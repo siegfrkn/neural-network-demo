@@ -65,82 +65,109 @@ function drawAccuracyChart() {
     const ctx = canvas.getContext('2d');
     const width = canvas.width;
     const height = canvas.height;
+    const padding = { left: 35, right: 10, top: 10, bottom: 20 };
+    const chartWidth = width - padding.left - padding.right;
+    const chartHeight = height - padding.top - padding.bottom;
 
     // Clear canvas
     ctx.fillStyle = '#1a1a2e';
     ctx.fillRect(0, 0, width, height);
 
+    // Draw Y-axis labels
+    ctx.fillStyle = '#6a6a8a';
+    ctx.font = '10px monospace';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (let i = 0; i <= 4; i++) {
+        const y = padding.top + (chartHeight / 4) * (4 - i);
+        const label = (i * 25) + '%';
+        ctx.fillText(label, padding.left - 5, y);
+    }
+
     // Draw grid lines
     ctx.strokeStyle = '#2a2a4a';
     ctx.lineWidth = 1;
     for (let i = 0; i <= 4; i++) {
-        const y = (height / 4) * i;
+        const y = padding.top + (chartHeight / 4) * i;
         ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(width, y);
+        ctx.moveTo(padding.left, y);
+        ctx.lineTo(width - padding.right, y);
         ctx.stroke();
     }
 
     // Draw 25% baseline (random guess for 4 classes)
-    ctx.strokeStyle = '#4a4a6a';
+    ctx.strokeStyle = '#ff6b6b';
     ctx.setLineDash([4, 4]);
+    ctx.lineWidth = 1;
     ctx.beginPath();
-    const baselineY = height - (height * 0.25);
-    ctx.moveTo(0, baselineY);
-    ctx.lineTo(width, baselineY);
+    const baselineY = padding.top + chartHeight * 0.75;
+    ctx.moveTo(padding.left, baselineY);
+    ctx.lineTo(width - padding.right, baselineY);
     ctx.stroke();
     ctx.setLineDash([]);
+
+    // Label for baseline
+    ctx.fillStyle = '#ff6b6b';
+    ctx.font = '9px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('random', padding.left + 5, baselineY - 5);
 
     // If no data, show placeholder text
     if (accuracyHistory.train.length === 0) {
         ctx.fillStyle = '#6a6a8a';
-        ctx.font = '11px sans-serif';
+        ctx.font = '12px sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('Train to see accuracy improve', width / 2, height / 2);
+        ctx.fillText('Click "Train" to watch accuracy improve!', width / 2, height / 2);
         return;
     }
 
     const points = accuracyHistory.train.length;
-    const xStep = width / Math.max(points - 1, 1);
+    const xStep = chartWidth / Math.max(points - 1, 1);
 
-    // Draw train accuracy line (cyan)
+    // Draw train accuracy line (cyan) with glow
+    ctx.shadowColor = '#00d9ff';
+    ctx.shadowBlur = 6;
     ctx.strokeStyle = '#00d9ff';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 2.5;
     ctx.beginPath();
     accuracyHistory.train.forEach((val, i) => {
-        const x = i * xStep;
-        const y = height - (val * height);
+        const x = padding.left + i * xStep;
+        const y = padding.top + chartHeight - (val * chartHeight);
         if (i === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
     });
     ctx.stroke();
+    ctx.shadowBlur = 0;
 
-    // Draw test accuracy line (purple)
+    // Draw test accuracy line (purple) with glow
+    ctx.shadowColor = '#9d4edd';
+    ctx.shadowBlur = 6;
     ctx.strokeStyle = '#9d4edd';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 2.5;
     ctx.beginPath();
     accuracyHistory.test.forEach((val, i) => {
-        const x = i * xStep;
-        const y = height - (val * height);
+        const x = padding.left + i * xStep;
+        const y = padding.top + chartHeight - (val * chartHeight);
         if (i === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
     });
     ctx.stroke();
+    ctx.shadowBlur = 0;
 
     // Draw current values as dots
     if (points > 0) {
-        const lastX = (points - 1) * xStep;
+        const lastX = padding.left + (points - 1) * xStep;
 
         // Train dot
         ctx.fillStyle = '#00d9ff';
         ctx.beginPath();
-        ctx.arc(lastX, height - (accuracyHistory.train[points - 1] * height), 4, 0, Math.PI * 2);
+        ctx.arc(lastX, padding.top + chartHeight - (accuracyHistory.train[points - 1] * chartHeight), 5, 0, Math.PI * 2);
         ctx.fill();
 
         // Test dot
         ctx.fillStyle = '#9d4edd';
         ctx.beginPath();
-        ctx.arc(lastX, height - (accuracyHistory.test[points - 1] * height), 4, 0, Math.PI * 2);
+        ctx.arc(lastX, padding.top + chartHeight - (accuracyHistory.test[points - 1] * chartHeight), 5, 0, Math.PI * 2);
         ctx.fill();
     }
 }

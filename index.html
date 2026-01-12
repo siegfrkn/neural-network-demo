@@ -29,14 +29,40 @@
                 </div>
             </section>
 
-            <!-- Center: Network Visualization -->
+            <!-- Center: Network + Accuracy Chart -->
             <section class="panel viz-panel">
-                <canvas id="networkCanvas" width="500" height="340"></canvas>
+                <canvas id="networkCanvas" width="500" height="280"></canvas>
                 <div class="layer-labels" id="layerLabels">
                     <span class="label input-label">Input (25)</span>
                     <span class="label hidden-label">Hidden (16)</span>
                     <span class="label hidden-label">Hidden (8)</span>
                     <span class="label output-label">Output (4)</span>
+                </div>
+
+                <!-- Accuracy Chart - Prominent Position -->
+                <div class="accuracy-chart-container featured">
+                    <div class="chart-header">
+                        <span class="chart-title">📈 Learning Progress</span>
+                        <div class="chart-legend">
+                            <span class="legend-train">━ Train</span>
+                            <span class="legend-test">━ Test</span>
+                        </div>
+                    </div>
+                    <canvas id="accuracyChart" width="480" height="100"></canvas>
+                    <div class="accuracy-stats">
+                        <div class="accuracy-stat">
+                            <span class="accuracy-label">Train Accuracy</span>
+                            <span class="accuracy-value" id="trainAccuracy">0%</span>
+                        </div>
+                        <div class="accuracy-stat">
+                            <span class="accuracy-label">Test Accuracy</span>
+                            <span class="accuracy-value test" id="testAccuracy">0%</span>
+                        </div>
+                        <div class="accuracy-stat">
+                            <span class="accuracy-label">Epochs</span>
+                            <span class="accuracy-value epochs" id="epochCount">0</span>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -50,31 +76,8 @@
                     </div>
                 </div>
 
-                <!-- Accuracy Chart -->
-                <div class="accuracy-chart-container">
-                    <div class="chart-header">
-                        <span class="chart-title">Accuracy Over Time</span>
-                        <div class="chart-legend">
-                            <span class="legend-train">■ Train</span>
-                            <span class="legend-test">■ Test</span>
-                        </div>
-                    </div>
-                    <canvas id="accuracyChart" width="200" height="80"></canvas>
-                    <div class="accuracy-row">
-                        <span class="accuracy-label">Train:</span>
-                        <span class="accuracy-value" id="trainAccuracy">0%</span>
-                        <span class="accuracy-label">Test:</span>
-                        <span class="accuracy-value test" id="testAccuracy">0%</span>
-                    </div>
-                </div>
-
                 <!-- Training Controls -->
                 <div class="training-area">
-                    <div class="stat-row">
-                        <span class="stat-label">Epochs:</span>
-                        <span class="stat-value" id="epochCount">0</span>
-                    </div>
-
                     <div class="training-controls">
                         <button id="trainBtn" class="btn btn-primary btn-train">Train</button>
                         <button id="testBtn" class="btn btn-test">Test</button>
