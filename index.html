@@ -3,158 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Neural Network - Logic Gates & Image Recognition</title>
+    <title>Neural Network - Pattern Recognition</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
+    <div class="app-container">
+        <!-- Header -->
         <header>
-            <h1>Interactive Neural Network</h1>
-            <p class="subtitle">Learn how neural networks work through logic gates and image recognition</p>
+            <h1>Neural Network Pattern Recognition</h1>
+            <p class="subtitle">Watch pathways strengthen as the network learns</p>
         </header>
 
-        <main>
-            <!-- Mode Selection -->
-            <section class="mode-selector">
-                <button id="logicModeBtn" class="mode-btn selected">
-                    <span class="mode-icon">Logic Gates</span>
-                    <span class="mode-desc">2 inputs, 1 hidden layer</span>
-                </button>
-                <button id="imageModeBtn" class="mode-btn">
-                    <span class="mode-icon">Image Recognition</span>
-                    <span class="mode-desc">25 inputs, 2 hidden layers</span>
-                </button>
-            </section>
-
-            <!-- Network Visualization -->
-            <section class="visualization-section">
-                <canvas id="networkCanvas" width="950" height="400"></canvas>
-                <div class="layer-labels" id="layerLabels">
-                    <span class="label input-label">Input (2)</span>
-                    <span class="label hidden-label">Hidden (4)</span>
-                    <span class="label output-label">Output (1)</span>
+        <!-- Main Content - Three Column Layout -->
+        <main class="main-grid">
+            <!-- Left: Drawing Area -->
+            <section class="panel drawing-panel">
+                <h2>Draw a Pattern</h2>
+                <div class="pixel-grid" id="pixelGrid"></div>
+                <div class="draw-controls">
+                    <button id="clearGridBtn" class="btn btn-small">Clear</button>
+                </div>
+                <div class="sample-patterns">
+                    <span class="sample-hint">Or click a sample:</span>
+                    <div class="pattern-samples" id="patternSamples"></div>
                 </div>
             </section>
 
-            <!-- LOGIC GATES MODE -->
-            <div id="logicMode">
-                <section class="problem-selector">
-                    <h2>Choose a Logic Problem</h2>
-                    <div class="problem-buttons">
-                        <button id="xorBtn" class="problem-btn">
-                            <span class="problem-name">XOR</span>
-                            <span class="problem-desc">Output 1 when inputs differ</span>
-                        </button>
-                        <button id="andBtn" class="problem-btn">
-                            <span class="problem-name">AND</span>
-                            <span class="problem-desc">Output 1 when both are 1</span>
-                        </button>
-                        <button id="orBtn" class="problem-btn">
-                            <span class="problem-name">OR</span>
-                            <span class="problem-desc">Output 1 when any is 1</span>
-                        </button>
-                    </div>
-                </section>
+            <!-- Center: Network Visualization -->
+            <section class="panel viz-panel">
+                <canvas id="networkCanvas" width="500" height="380"></canvas>
+                <div class="layer-labels" id="layerLabels">
+                    <span class="label input-label">Input (25)</span>
+                    <span class="label hidden-label">Hidden (16)</span>
+                    <span class="label hidden-label">Hidden (8)</span>
+                    <span class="label output-label">Output (4)</span>
+                </div>
+            </section>
 
-                <section class="truth-table-section" id="logicTableSection" style="display: none;">
-                    <div class="truth-table-container">
-                        <h3>Truth Table: <span id="logicProblemName">-</span></h3>
-                        <table class="truth-table">
-                            <thead>
-                                <tr>
-                                    <th>In 1</th>
-                                    <th>In 2</th>
-                                    <th>Expected</th>
-                                    <th>Prediction</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="logicTableBody"></tbody>
-                        </table>
+            <!-- Right: Prediction & Training -->
+            <section class="panel control-panel">
+                <div class="prediction-area">
+                    <h2>Network Output</h2>
+                    <div class="prediction-bars" id="predictionBars"></div>
+                    <div class="predicted-class">
+                        Prediction: <span id="predictedClass">-</span>
                     </div>
-                    <div class="training-panel" id="logicTrainingPanel"></div>
-                </section>
-            </div>
+                </div>
 
-            <!-- IMAGE RECOGNITION MODE -->
-            <div id="imageMode" style="display: none;">
-                <section class="image-section">
-                    <div class="drawing-area">
-                        <h3>Draw a Pattern (5x5 grid)</h3>
-                        <p class="draw-hint">Click pixels to toggle. The network will classify your drawing.</p>
-                        <div class="pixel-grid" id="pixelGrid"></div>
-                        <div class="draw-controls">
-                            <button id="clearGridBtn" class="btn btn-secondary">Clear Grid</button>
+                <div class="training-area">
+                    <div class="stats-row">
+                        <div class="stat">
+                            <span class="stat-value" id="epochCount">0</span>
+                            <span class="stat-label">Epochs</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value" id="accuracy">0%</span>
+                            <span class="stat-label">Accuracy</span>
                         </div>
                     </div>
 
-                    <div class="prediction-area">
-                        <h3>Network Prediction</h3>
-                        <div class="prediction-bars" id="predictionBars"></div>
-                        <div class="predicted-class">
-                            Predicted: <span id="predictedClass">-</span>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="image-training-section">
-                    <div class="training-panel">
-                        <div class="stats-display">
-                            <div class="stat-item">
-                                <span class="stat-number" id="imageEpochCount">0</span>
-                                <span class="stat-label">Epochs</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-number" id="imageAccuracy">0%</span>
-                                <span class="stat-label">Accuracy</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-number" id="imageError">-</span>
-                                <span class="stat-label">Avg Error</span>
-                            </div>
-                        </div>
-
-                        <div class="training-controls">
-                            <button id="imageTrainBtn" class="btn btn-large btn-success">
-                                Train Until Learned
-                            </button>
-                            <button id="imageTrain100Btn" class="btn btn-primary">
-                                Train 100 Epochs
-                            </button>
-                            <button id="imageResetBtn" class="btn btn-danger">
-                                Reset Network
-                            </button>
-                        </div>
-
-                        <div class="speed-control">
-                            <label>Learning Rate: <span id="imageLrValue">0.5</span></label>
-                            <input type="range" id="imageLearningRate" min="0.1" max="2" step="0.1" value="0.5">
-                        </div>
+                    <div class="training-controls">
+                        <button id="trainBtn" class="btn btn-primary btn-train">Train Network</button>
+                        <button id="resetBtn" class="btn btn-secondary">Reset</button>
                     </div>
 
-                    <div class="sample-patterns">
-                        <h3>Sample Patterns (click to load)</h3>
-                        <div class="pattern-samples" id="patternSamples"></div>
-                    </div>
-                </section>
-            </div>
-
-            <!-- Info Section -->
-            <section class="info-section">
-                <div class="explanation-panel">
-                    <h3 id="explanationTitle">How It Works</h3>
-                    <div id="explanationText">
-                        <p><strong>1. Choose a mode above</strong> - Logic gates use a simple network, image recognition uses a deep network.</p>
-                        <p><strong>2. Select a problem or draw a pattern</strong> - The network will try to classify your input.</p>
-                        <p><strong>3. Train the network</strong> - Watch as weights adjust and accuracy improves!</p>
+                    <div class="speed-control">
+                        <label>Learning Rate: <span id="lrValue">0.5</span></label>
+                        <input type="range" id="learningRate" min="0.1" max="2" step="0.1" value="0.5">
                     </div>
                 </div>
             </section>
         </main>
-
-        <footer>
-            <p>Interactive Neural Network Demo - Learn by Experimenting!</p>
-        </footer>
     </div>
 
     <script src="neural-network.js"></script>
