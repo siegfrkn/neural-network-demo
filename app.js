@@ -191,6 +191,23 @@ function buildPredictionBars() {
  * Update prediction display
  */
 function updatePrediction() {
+    const pixelCount = pixelGrid.filter(p => p === 1).length;
+    const minPixels = 4;
+
+    // Check minimum pixel requirement
+    if (pixelCount < minPixels) {
+        // Reset all bars and show message
+        PATTERN_NAMES.forEach((name, i) => {
+            const bar = document.getElementById('predBar' + i);
+            bar.style.width = '0%';
+            bar.classList.remove('winner');
+            document.getElementById('predValue' + i).textContent = '-';
+        });
+        document.getElementById('predictedClass').textContent =
+            'Draw at least ' + minPixels + ' pixels (' + pixelCount + '/' + minPixels + ')';
+        return;
+    }
+
     const outputs = network.predict(pixelGrid);
     let maxIndex = 0;
     let maxValue = outputs[0];
