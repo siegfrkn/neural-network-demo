@@ -355,24 +355,25 @@ const IMAGE_DATASET = [
 ];
 
 // TEST DATASET - Unseen variations to test generalization
+// These patterns are clearly their type but different from training examples
 const TEST_DATASET = [
-    // Horizontal tests
-    { inputs: [0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 1,1,1,1,0, 0,0,0,0,0], targets: [1,0,0,0], name: 'H test 1' },
-    { inputs: [1,1,1,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0], targets: [1,0,0,0], name: 'H test 2' },
-    { inputs: [0,0,0,0,0, 0,0,1,1,1, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0], targets: [1,0,0,0], name: 'H test 3' },
+    // Horizontal tests - clear horizontal lines at different positions
+    { inputs: [0,0,0,0,0, 0,1,1,1,1, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0], targets: [1,0,0,0], name: 'H test 1' },
+    { inputs: [0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 1,1,1,1,0, 0,0,0,0,0], targets: [1,0,0,0], name: 'H test 2' },
+    { inputs: [0,0,0,0,0, 0,0,0,0,0, 1,1,1,1,0, 1,1,1,1,0, 0,0,0,0,0], targets: [1,0,0,0], name: 'H test 3' },
 
-    // Vertical tests
-    { inputs: [0,0,0,0,0, 0,0,0,0,1, 0,0,0,0,1, 0,0,0,0,1, 0,0,0,0,0], targets: [0,1,0,0], name: 'V test 1' },
-    { inputs: [1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0], targets: [0,1,0,0], name: 'V test 2' },
-    { inputs: [0,0,0,0,0, 0,0,0,0,0, 0,1,0,0,0, 0,1,0,0,0, 0,1,0,0,0], targets: [0,1,0,0], name: 'V test 3' },
+    // Vertical tests - clear vertical lines at different positions
+    { inputs: [0,0,0,1,0, 0,0,0,1,0, 0,0,0,1,0, 0,0,0,1,0, 0,0,0,0,0], targets: [0,1,0,0], name: 'V test 1' },
+    { inputs: [0,1,0,0,0, 0,1,0,0,0, 0,1,0,0,0, 0,1,0,0,0, 0,1,0,0,0], targets: [0,1,0,0], name: 'V test 2' },
+    { inputs: [0,0,0,0,0, 0,0,0,1,0, 0,0,0,1,0, 0,0,0,1,0, 0,0,0,1,0], targets: [0,1,0,0], name: 'V test 3' },
 
-    // Diagonal tests
-    { inputs: [0,0,0,0,0, 0,0,0,0,0, 1,0,0,0,0, 0,1,0,0,0, 0,0,1,0,0], targets: [0,0,1,0], name: 'D test 1' },
-    { inputs: [0,0,1,0,0, 0,0,0,1,0, 0,0,0,0,1, 0,0,0,0,0, 0,0,0,0,0], targets: [0,0,1,0], name: 'D test 2' },
-    { inputs: [0,0,0,0,0, 0,0,0,0,0, 0,0,1,0,0, 0,1,0,0,0, 1,0,0,0,0], targets: [0,0,1,0], name: 'D test 3' },
+    // Diagonal tests - clear diagonal lines
+    { inputs: [0,0,0,0,0, 0,0,1,0,0, 0,0,0,1,0, 0,0,0,0,1, 0,0,0,0,0], targets: [0,0,1,0], name: 'D test 1' },
+    { inputs: [0,0,0,0,0, 0,0,0,1,0, 0,0,1,0,0, 0,1,0,0,0, 0,0,0,0,0], targets: [0,0,1,0], name: 'D test 2' },
+    { inputs: [0,0,0,1,0, 0,0,1,0,0, 0,1,0,0,0, 1,0,0,0,0, 0,0,0,0,0], targets: [0,0,1,0], name: 'D test 3' },
 
-    // Cross tests
-    { inputs: [0,0,0,0,0, 0,1,0,1,0, 0,0,1,0,0, 0,1,0,1,0, 0,0,0,0,0], targets: [0,0,0,1], name: 'X test 1' },
-    { inputs: [0,0,1,0,0, 0,1,1,1,0, 0,0,1,0,0, 0,0,0,0,0, 0,0,0,0,0], targets: [0,0,0,1], name: '+ test 1' },
-    { inputs: [0,0,0,0,0, 0,0,1,0,0, 1,1,1,0,0, 0,0,1,0,0, 0,0,1,0,0], targets: [0,0,0,1], name: '+ test 2' }
+    // Cross tests - clear cross/X patterns
+    { inputs: [0,0,0,0,0, 0,0,1,0,0, 0,1,1,1,0, 0,0,1,0,0, 0,0,0,0,0], targets: [0,0,0,1], name: '+ test 1' },
+    { inputs: [0,0,1,0,0, 0,0,1,0,0, 1,1,1,1,0, 0,0,1,0,0, 0,0,0,0,0], targets: [0,0,0,1], name: '+ test 2' },
+    { inputs: [1,0,0,0,0, 0,1,0,1,0, 0,0,1,0,0, 0,1,0,1,0, 0,0,0,0,1], targets: [0,0,0,1], name: 'X test 1' }
 ];
